@@ -1,8 +1,9 @@
+import cors from '@fastify/cors';
 import fastify, { FastifyInstance } from 'fastify';
 import routesController from './controller/routesController';
 import socketController from './controller/socketController';
 import socketioServer from 'fastify-socket.io';
-import cors from '@fastify/cors';
+import userController from './controller/userController';
 
 const server: FastifyInstance = fastify({ logger: true });
 
@@ -12,6 +13,8 @@ server.register(cors, {
 });
 
 server.register(socketioServer);
+
+server.register(userController, { prefix: '/v1' });
 
 server.register(routesController);
 
