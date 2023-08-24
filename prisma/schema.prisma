@@ -13,13 +13,14 @@ enum RoleEnum {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique @db.VarChar(255)
-  password  String
-  name      String   @db.VarChar(30)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
-  roles     Role[]
+  id         Int       @id @default(autoincrement())
+  email      String    @unique @db.VarChar(255)
+  password   String
+  name       String    @db.VarChar(30)
+  bannedTime DateTime? @map("banned_time")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @default(now()) @updatedAt @map("updated_at")
+  roles      Role[]
 
   @@map(name: "tb_user")
 }

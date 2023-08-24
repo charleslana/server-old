@@ -11,6 +11,7 @@ export function validateCreateUser() {
           'string.max':
             'O campo de e-mail não deve ter mais de {#limit} caracteres',
           'any.required': 'O campo de e-mail é obrigatório',
+          'string.empty': 'O campo de e-mail não pode estar vazio',
         }),
         name: Joi.string()
           .pattern(/^[a-zA-ZÀ-ú0-9_ ]*$/)
@@ -79,6 +80,28 @@ export function validateUpdateUserName() {
             'any.required': 'O campo de nome é obrigatório',
             'string.empty': 'O campo de nome não pode estar vazio',
           }),
+      },
+    },
+    { abortEarly: false, messages: customValidateMessages }
+  );
+}
+
+export function validateLogin() {
+  return celebrate(
+    {
+      [Segments.BODY]: {
+        email: Joi.string().email().trim().max(50).required().messages({
+          'string.base': 'O campo de e-mail deve ser uma string válida',
+          'string.email': 'O e-mail fornecido não é válido',
+          'string.max':
+            'O campo de e-mail não deve ter mais de {#limit} caracteres',
+          'any.required': 'O campo de e-mail é obrigatório',
+          'string.empty': 'O campo de e-mail não pode estar vazio',
+        }),
+        password: Joi.string().required().messages({
+          'string.base': 'O campo de senha deve ser uma string válida',
+          'any.required': 'O campo de senha é obrigatório',
+        }),
       },
     },
     { abortEarly: false, messages: customValidateMessages }

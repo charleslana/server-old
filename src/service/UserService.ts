@@ -1,20 +1,25 @@
 import bcrypt from 'bcrypt';
+import { AuthService } from './AuthService';
 import { FastifyReply } from 'fastify';
+import { formatDate, omitField, omitFields } from '../utils/utils';
 import { GlobalError } from '../handler/GlobalError';
 import { GlobalSuccess } from '../handler/GlobalSuccess';
-import { omitField, omitFields } from '../utils/utils';
 import { User } from '@prisma/client';
 import { UserRepository } from '../repository/UserRepository';
 
 export class UserService {
   private userRepository = new UserRepository();
+  private authService = new AuthService();
 
   async create(user: User): Promise<User> {
     const exist = await this.userRepository.findByEmail(user.email);
     if (exist) {
       throw new GlobalError('E-mail já cadastrado');
     }
-    const hashedPassword = await bcrypt.hash(user.password, 10);
+    const hashedPassword = await bcrypt.hash(
+      user.password,
+      +process.env.PASSWORD_SALT!
+    );
     return await this.userRepository.save({
       ...user,
       password: hashedPassword,
@@ -48,6 +53,27 @@ export class UserService {
   async delete(id: number, reply: FastifyReply): Promise<void> {
     await this.getById(id);
     await this.userRepository.delete(id);
-    GlobalSuccess.send(reply, 'Data deleted successfully');
+    GlobalSuccess.send(reply, 'Usuário deletado com sucesso');
+  }
+
+  async authenticateAndGenerateToken(
+    email: string,
+    password: string
+  ): Promise<string> {
+    const find = await this.userRepository.findByEmail(email);
+    if (!find) {
+      throw new GlobalError('Credenciais inválidas');
+    }
+    if (find.bannedTime != null && find.bannedTime > new Date()) {
+      throw new GlobalError(
+        `Usuário banido até ${formatDate(find.bannedTime)}`
+      );
+    }
+    const passwordMatches = await bcrypt.compare(password, find.password);
+    if (!passwordMatches) {
+      throw new GlobalError('Credenciais inválidas');
+    }
+    const token = this.authService.generateToken(find);
+    return token;
   }
 }

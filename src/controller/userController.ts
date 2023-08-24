@@ -1,11 +1,13 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { User } from '@prisma/client';
 import { UserService } from '../service/UserService';
+import { validateAuthMiddleware } from '../middleware/authMiddleware';
 import { validateBodyMiddleware } from '../middleware/validateBodyMiddleware';
 import { validateId } from '../middleware/celebrate/commonCelebrate';
 import { validateMiddleware } from '../middleware/validateMiddleware';
 import {
   validateCreateUser,
+  validateLogin,
   validateUpdateUserName,
 } from '../middleware/celebrate/userMiddleware';
 
@@ -26,10 +28,16 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
     }
   );
 
-  fastify.get('/', async (_request, _reply) => {
-    const getAll = await userService.getAll();
-    return { message: 'Data fetched successfully', data: getAll };
-  });
+  fastify.get(
+    '/',
+    {
+      preHandler: [validateAuthMiddleware()],
+    },
+    async (_request, _reply) => {
+      const getAll = await userService.getAll();
+      return { message: 'Data fetched successfully', data: getAll };
+    }
+  );
 
   fastify.get(
     '/:id',
@@ -70,7 +78,28 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       reply: FastifyReply
     ) => {
       await userService.delete(request.params.id, reply);
-      // return { message: 'Data deleted successfully' };
+    }
+  );
+
+  fastify.post(
+    '/auth',
+    {
+      preHandler: [
+        validateBodyMiddleware(),
+        validateMiddleware<{ Body: { email: string; password: string } }>(
+          validateLogin()
+        ),
+      ],
+    },
+    async (
+      request: FastifyRequest<{ Body: { email: string; password: string } }>,
+      _reply
+    ) => {
+      const token = await userService.authenticateAndGenerateToken(
+        request.body.email,
+        request.body.password
+      );
+      return { token };
     }
   );
 

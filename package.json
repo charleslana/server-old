@@ -6,10 +6,9 @@
   "scripts": {
     "lint": "eslint . --ext .ts",
     "lint-fix": "eslint . --ext .ts --fix",
-    "dev": "npx ts-node src/main.ts",
-    "watch": "nodemon src/main.ts",
+    "dev": "ts-node-dev --respawn --transpile-only src/main.ts",
     "build": "rm -rf dist && tsc",
-    "start": "npm run build && node dist/main.js",
+    "start": "npm run migrate && npm run build && node dist/main.js",
     "migrate": "npx prisma migrate dev --name initial",
     "seed": "npx ts-node prisma/seed.ts"
   },
@@ -23,20 +22,22 @@
     "celebrate": "^15.0.1",
     "fastify": "^4.21.0",
     "fastify-socket.io": "^4.0.0",
+    "jsonwebtoken": "^9.0.1",
     "pg": "^8.11.3",
     "socket.io": "^4.7.2"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
     "@types/joi": "^17.2.3",
+    "@types/jsonwebtoken": "^9.0.2",
     "@types/node": "^20.5.3",
     "@typescript-eslint/eslint-plugin": "^6.2.0",
     "@typescript-eslint/parser": "^6.2.0",
     "eslint": "^8.46.0",
     "eslint-config-prettier": "^8.9.0",
     "eslint-plugin-prettier": "^5.0.0",
-    "nodemon": "^3.0.1",
     "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.1.6"
   }
 }

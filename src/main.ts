@@ -22,17 +22,25 @@ server.register(routesController);
 server.register(socketController);
 
 server.setErrorHandler((error, _request, reply) => {
+  if (error instanceof SyntaxError && error.message.includes('JSON')) {
+    return reply.status(400).send({ message: 'Invalid JSON data' });
+  }
+  if (
+    error instanceof Error &&
+    error.message.includes('Unsupported Media Type')
+  ) {
+    return reply.status(400).send({ message: error.message });
+  }
   if (error instanceof GlobalError) {
     const statusCode = error.statusCode || 500;
-    reply.status(statusCode).send({
+    return reply.status(statusCode).send({
       message: error.message,
     });
-  } else {
-    reply.status(500).send({
-      message: 'Internal Server Error',
-      error: error.message,
-    });
   }
+  reply.status(500).send({
+    message: 'Internal Server Error',
+    error: error.message,
+  });
 });
 
 server.setNotFoundHandler((_request, reply) => {
@@ -43,7 +51,8 @@ server.setNotFoundHandler((_request, reply) => {
 
 const start = async () => {
   try {
-    await server.listen({ port: 3000 });
+    const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+    await server.listen({ port: port });
     server.log.info(`Server listening on ${server.server.address()}`);
   } catch (err) {
     server.log.error(err);

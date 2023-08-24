@@ -1,4 +1,4 @@
-import { FastifyRequest, FastifyReply, RouteGenericInterface } from 'fastify';
+import { FastifyReply, FastifyRequest, RouteGenericInterface } from 'fastify';
 
 export function validateBodyMiddleware<T extends RouteGenericInterface>() {
   return (
@@ -7,11 +7,15 @@ export function validateBodyMiddleware<T extends RouteGenericInterface>() {
     doneHook: () => void
   ) => {
     if (!request.body || Object.keys(request.body).length === 0) {
-      reply.status(400).send({
+      return reply.status(400).send({
         message: 'Bad Request: Request body is missing or empty',
       });
-    } else {
-      doneHook();
     }
+    if (typeof request.body !== 'object' || Array.isArray(request.body)) {
+      return reply.status(400).send({
+        message: 'Requisição inválida. O corpo deve ser um objeto JSON.',
+      });
+    }
+    doneHook();
   };
 }
