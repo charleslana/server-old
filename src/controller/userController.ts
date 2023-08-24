@@ -1,4 +1,5 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import { IPassword } from '../interface/IPassword';
 import { RoleEnum, User } from '@prisma/client';
 import { UserService } from '../service/UserService';
 import { validateAuthMiddleware } from '../middleware/authMiddleware';
@@ -9,6 +10,7 @@ import { validateRoleMiddleware } from '../middleware/roleMiddleware';
 import {
   validateCreateUser,
   validateLogin,
+  validatePassword,
   validateUpdateUserName,
 } from '../middleware/celebrate/userMiddleware';
 
@@ -48,6 +50,8 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
     {
       preHandler: [
         validateCelebrateMiddleware<{ Params: { id: number } }>(validateId()),
+        validateAuthMiddleware(),
+        validateRoleMiddleware([RoleEnum.Admin]),
       ],
     },
     async (request: FastifyRequest<{ Params: { id: number } }>, _reply) => {
@@ -62,6 +66,8 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       preHandler: [
         validateBodyMiddleware(),
         validateCelebrateMiddleware<{ Body: User }>(validateUpdateUserName()),
+        validateAuthMiddleware(),
+        validateRoleMiddleware([RoleEnum.Admin]),
       ],
     },
     async (request: FastifyRequest<{ Body: User }>, _reply) => {
@@ -75,6 +81,8 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
     {
       preHandler: [
         validateCelebrateMiddleware<{ Params: { id: number } }>(validateId()),
+        validateAuthMiddleware(),
+        validateRoleMiddleware([RoleEnum.Admin]),
       ],
     },
     async (
@@ -104,6 +112,36 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
         request.body.password
       );
       return { token };
+    }
+  );
+
+  fastify.get(
+    '/profile',
+    {
+      preHandler: [validateAuthMiddleware()],
+    },
+    async (request: FastifyRequest, _reply) => {
+      const get = await userService.getById(request.user.id);
+      return get;
+    }
+  );
+
+  fastify.put(
+    '/password',
+    {
+      preHandler: [
+        validateBodyMiddleware(),
+        validateCelebrateMiddleware<{ Body: IPassword }>(validatePassword()),
+        validateAuthMiddleware(),
+      ],
+    },
+    async (
+      request: FastifyRequest<{ Body: IPassword }>,
+      reply: FastifyReply
+    ) => {
+      request.body.userId = request.user.id;
+      request.body.reply = reply;
+      await userService.updatePassword(request.body);
     }
   );
 

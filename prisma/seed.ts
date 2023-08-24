@@ -1,18 +1,20 @@
-import bcrypt from 'bcrypt';
 import { PrismaClient } from '@prisma/client';
+import { UserService } from '../src/service/UserService';
 
 const prisma = new PrismaClient();
+
+const userService = new UserService();
 
 async function main() {
   const users = [
     {
       email: 'user1@example.com',
-      password: await bcrypt.hash('password1', +process.env.PASSWORD_SALT!),
+      password: userService.encrypt('password1'),
       name: 'User 1',
     },
     {
       email: 'user2@example.com',
-      password: await bcrypt.hash('password2', +process.env.PASSWORD_SALT!),
+      password: userService.encrypt('password2'),
       name: 'User 2',
     },
   ];

@@ -4,6 +4,7 @@ import { FastifyReply } from 'fastify';
 import { formatDate, omitField, omitFields } from '../utils/utils';
 import { GlobalError } from '../handler/GlobalError';
 import { GlobalSuccess } from '../handler/GlobalSuccess';
+import { IPassword } from '../interface/IPassword';
 import { User } from '@prisma/client';
 import { UserRepository } from '../repository/UserRepository';
 
@@ -16,17 +17,14 @@ export class UserService {
     if (exist) {
       throw new GlobalError('E-mail já cadastrado');
     }
-    const hashedPassword = await bcrypt.hash(
-      user.password,
-      +process.env.PASSWORD_SALT!
-    );
+    const hashedPassword = this.encrypt(user.password);
     return await this.userRepository.save({
       ...user,
       password: hashedPassword,
     });
   }
 
-  async getById(id: number): Promise<Omit<User, 'password'> | null> {
+  async getById(id: number): Promise<Omit<User, 'password'>> {
     const find = await this.userRepository.findById(id);
     if (!find) {
       throw new GlobalError('Usuário não encontrado');
@@ -69,11 +67,37 @@ export class UserService {
         `Usuário banido até ${formatDate(find.bannedTime)}`
       );
     }
-    const passwordMatches = await bcrypt.compare(password, find.password);
+    const passwordMatches = this.decrypt(password, find.password);
     if (!passwordMatches) {
       throw new GlobalError('Credenciais inválidas');
     }
     const token = this.authService.generateToken(find);
     return token;
+  }
+
+  async updatePassword(password: IPassword): Promise<void> {
+    const find = await this.userRepository.findById(password.userId);
+    if (!find) {
+      throw new GlobalError('Usuário não encontrado');
+    }
+    if (!this.decrypt(password.currentPassword, find.password)) {
+      throw new GlobalError('Senha atual inválida');
+    }
+    await this.userRepository.update(password.userId, {
+      password: this.encrypt(password.newPassword),
+    });
+    GlobalSuccess.send(password.reply, 'Senha alterada com sucesso');
+  }
+
+  encrypt(password: string): string {
+    const salt = +process.env.BCRYPT_SALT!;
+    return bcrypt.hashSync(`${password}${process.env.BCRYPT_PASSWORD}`, salt);
+  }
+
+  private decrypt(password: string, hashPassword: string): boolean {
+    return bcrypt.compareSync(
+      `${password}${process.env.BCRYPT_PASSWORD}`,
+      hashPassword
+    );
   }
 }

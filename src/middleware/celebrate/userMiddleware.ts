@@ -107,3 +107,34 @@ export function validateLogin() {
     { abortEarly: false, messages: customValidateMessages }
   );
 }
+
+export const validatePassword = () => {
+  return celebrate(
+    {
+      [Segments.BODY]: {
+        currentPassword: Joi.string().required().messages({
+          'string.empty': 'A senha atual é obrigatória',
+        }),
+        newPassword: Joi.string().min(6).max(50).required().messages({
+          'string.empty': 'A nova senha é obrigatória',
+          'string.min':
+            'A nova senha deve ter pelo menos {{#limit}} caracteres',
+          'string.max':
+            'A nova senha não pode ter mais que {{#limit}} caracteres',
+        }),
+        passwordConfirmation: Joi.string()
+          .valid(Joi.ref('newPassword'))
+          .when('newPassword', {
+            is: Joi.exist(),
+            then: Joi.required(),
+          })
+          .messages({
+            'string.empty': 'A confirmação de senha é obrigatória',
+            'any.only':
+              'A confirmação de senha deve coincidir com a nova senha',
+          }),
+      },
+    },
+    { abortEarly: false }
+  );
+};

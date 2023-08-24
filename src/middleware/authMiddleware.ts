@@ -1,10 +1,10 @@
 import { AuthService } from '../service/AuthService';
-import { FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyReply, FastifyRequest, RouteGenericInterface } from 'fastify';
 import { GlobalError } from '../handler/GlobalError';
 
-export function validateAuthMiddleware() {
+export function validateAuthMiddleware<T extends RouteGenericInterface>() {
   return (
-    request: FastifyRequest,
+    request: FastifyRequest<T>,
     _reply: FastifyReply,
     doneHook: () => void
   ) => {

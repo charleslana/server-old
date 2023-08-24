@@ -1,10 +1,12 @@
-import { FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyReply, FastifyRequest, RouteGenericInterface } from 'fastify';
 import { GlobalError } from '../handler/GlobalError';
 import { RoleEnum } from '@prisma/client';
 
-export function validateRoleMiddleware(allowedRoles: RoleEnum[]) {
+export function validateRoleMiddleware<T extends RouteGenericInterface>(
+  allowedRoles: RoleEnum[]
+) {
   return (
-    request: FastifyRequest,
+    request: FastifyRequest<T>,
     _reply: FastifyReply,
     doneHook: () => void
   ) => {
