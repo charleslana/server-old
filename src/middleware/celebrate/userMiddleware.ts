@@ -14,7 +14,7 @@ export function validateCreateUser() {
           'string.empty': 'O campo de e-mail não pode estar vazio',
         }),
         name: Joi.string()
-          .pattern(/^[a-zA-ZÀ-ú0-9_ ]*$/)
+          .pattern(/^[a-zA-ZÀ-ú ]*$/)
           .trim()
           .min(3)
           .max(30)
