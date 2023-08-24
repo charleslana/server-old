@@ -1,4 +1,4 @@
-# Game server
+# Server
 
 - TypeScript
 - Node

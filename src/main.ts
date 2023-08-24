@@ -1,16 +1,38 @@
 import cors from '@fastify/cors';
 import fastify, { FastifyInstance } from 'fastify';
+import fastifyCookie from '@fastify/cookie';
+import fastifySession from '@fastify/session';
 import routesController from './controller/routesController';
 import socketController from './controller/socketController';
 import socketioServer from 'fastify-socket.io';
 import userController from './controller/userController';
 import { GlobalError } from './handler/GlobalError';
+import { PrismaClient } from '@prisma/client';
 
-const server: FastifyInstance = fastify({ logger: true });
+const server: FastifyInstance = fastify({
+  logger: {
+    transport: {
+      target: 'pino-pretty',
+      options: {
+        translateTime: 'HH:MM:ss Z',
+        ignore: 'pid,hostname',
+      },
+    },
+  },
+});
 
 server.register(cors, {
   origin: '*',
   credentials: true,
+});
+
+server.register(fastifyCookie);
+
+server.register(fastifySession, {
+  secret: process.env.SESSION_SECRET as string,
+  cookie: {
+    secure: process.env.COOKIE_SECURE as unknown as boolean,
+  },
 });
 
 server.register(socketioServer);
@@ -51,6 +73,8 @@ server.setNotFoundHandler((_request, reply) => {
 
 const start = async () => {
   try {
+    const prisma = new PrismaClient();
+    await prisma.$connect();
     const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
     await server.listen({ port: port });
     server.log.info(`Server listening on ${server.server.address()}`);
