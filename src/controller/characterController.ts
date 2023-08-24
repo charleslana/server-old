@@ -1,0 +1,46 @@
+import { CharacterService } from '../service/CharacterService';
+import { FastifyInstance, FastifyRequest } from 'fastify';
+import { validateAuthMiddleware } from '../middleware/authMiddleware';
+import { validateCelebrateMiddleware } from '../middleware/celebrate/validateCelebrateMiddleware';
+import { validateId } from '../middleware/celebrate/commonCelebrate';
+
+function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
+  const characterService = new CharacterService();
+
+  fastify.get(
+    '/',
+    {
+      preHandler: [validateAuthMiddleware()],
+    },
+    async (_request, _reply) => {
+      const getAll = await characterService.getAll();
+      return getAll;
+    }
+  );
+
+  fastify.get(
+    '/:id',
+    {
+      preHandler: [
+        validateCelebrateMiddleware<{ Params: { id: number } }>(validateId()),
+        validateAuthMiddleware(),
+      ],
+    },
+    async (request: FastifyRequest<{ Params: { id: number } }>, _reply) => {
+      const get = await characterService.getById(request.params.id);
+      return get;
+    }
+  );
+
+  done();
+}
+
+export default function characterController(
+  fastify: FastifyInstance,
+  _: unknown,
+  done: () => void
+) {
+  fastify.register(createRoute, { prefix: '/character' });
+
+  done();
+}

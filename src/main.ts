@@ -1,3 +1,4 @@
+import characterController from './controller/characterController';
 import cors from '@fastify/cors';
 import fastify, { FastifyInstance } from 'fastify';
 import fastifyCookie from '@fastify/cookie';
@@ -38,6 +39,8 @@ server.register(fastifySession, {
 server.register(socketioServer);
 
 server.register(userController, { prefix: '/v1' });
+
+server.register(characterController, { prefix: '/v1' });
 
 server.register(routesController);
 
