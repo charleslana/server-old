@@ -1,7 +1,7 @@
-import { FastifyRequest, FastifyReply, RouteGenericInterface } from 'fastify';
+import { FastifyReply, FastifyRequest, RouteGenericInterface } from 'fastify';
 import { isCelebrateError } from 'celebrate';
 
-export function validateMiddleware<T extends RouteGenericInterface>(
+export function validateCelebrateMiddleware<T extends RouteGenericInterface>(
   celebrateFn: (req: FastifyRequest<T>, rep: FastifyReply) => Promise<void>
 ) {
   return async (request: FastifyRequest<T>, reply: FastifyReply) => {

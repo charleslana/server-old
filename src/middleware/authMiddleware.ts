@@ -10,7 +10,7 @@ export function validateAuthMiddleware() {
   ) => {
     const token = request.headers.authorization;
     if (!token) {
-      throw new GlobalError('Usuário não autorizado', 403);
+      throw new GlobalError('Usuário não autenticado', 403);
     }
     const authService = new AuthService();
     const decodedToken = authService.verifyJwtToken(token!);
