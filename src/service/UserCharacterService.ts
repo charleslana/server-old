@@ -2,6 +2,7 @@ import { CharacterService } from './CharacterService';
 import { FastifyReply } from 'fastify';
 import { GlobalError } from '../handler/GlobalError';
 import { GlobalSuccess } from '../handler/GlobalSuccess';
+import { IAttribute } from '../interface/IAttribute';
 import { UserCharacter } from '@prisma/client';
 import { UserCharacterRepository } from '../repository/UserCharacterRepository';
 
@@ -49,5 +50,23 @@ export class UserCharacterService {
     await this.getByIdAndUserId(id, userId);
     await this.userCharacterRepository.delete(id);
     GlobalSuccess.send(reply, 'Personagem do usuário excluído com sucesso');
+  }
+
+  async updateAttribute(attribute: IAttribute): Promise<void> {
+    const find = await this.getByIdAndUserId(attribute.id, attribute.userId);
+    if (find.point < attribute.point) {
+      throw new GlobalError('Pontos de atributos insuficiente');
+    }
+    const spentPoint = find.spentPoint ?? 0;
+    const attributeToUpdate = attribute.attribute;
+    await this.userCharacterRepository.update(attribute.id, {
+      point: find.point - attribute.point,
+      spentPoint: spentPoint + attribute.point,
+      [attributeToUpdate]: find[attributeToUpdate] + attribute.point,
+    });
+    GlobalSuccess.send(
+      attribute.reply,
+      'Pontos de atributo adicionado com sucesso'
+    );
   }
 }

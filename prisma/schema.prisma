@@ -49,15 +49,20 @@ model Character {
 }
 
 model UserCharacter {
-  id          Int       @id @default(autoincrement())
-  name        String    @unique @db.VarChar(255)
-  level       Int       @default(1)
-  User        User      @relation(fields: [userId], references: [id])
-  userId      Int       @map("user_id")
-  character   Character @relation(fields: [characterId], references: [id])
-  characterId Int       @map("character_id")
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at")
+  id           Int       @id @default(autoincrement())
+  name         String    @unique @db.VarChar(255)
+  level        Int       @default(1)
+  strength     Int       @default(1)
+  intelligence Int       @default(1)
+  dexterity    Int       @default(1)
+  point        Int       @default(10)
+  spentPoint   Int?
+  User         User      @relation(fields: [userId], references: [id])
+  userId       Int       @map("user_id")
+  character    Character @relation(fields: [characterId], references: [id])
+  characterId  Int       @map("character_id")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at")
 
   @@map(name: "tb_user_character")
 }

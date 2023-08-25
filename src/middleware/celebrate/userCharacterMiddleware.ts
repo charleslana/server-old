@@ -1,3 +1,4 @@
+import { AttributeEnum } from '../../enum/AttributeEnum';
 import { celebrate, Joi, Segments } from 'celebrate';
 import { customValidateMessages } from '../../utils/utils';
 
@@ -32,3 +33,26 @@ export function validateCreateUserCharacter() {
     { abortEarly: false, messages: customValidateMessages }
   );
 }
+
+export const validateUpdateAttribute = () => {
+  return celebrate(
+    {
+      [Segments.BODY]: {
+        attribute: Joi.string()
+          .valid(...Object.values(AttributeEnum))
+          .required()
+          .messages({
+            'string.empty': 'O campo atributo é obrigatório',
+            'any.only':
+              'O valor do campo atributo deve ser um dos valores válidos: {{#valids}}',
+          }),
+        point: Joi.number().positive().required().messages({
+          'number.base': 'O ponto deve ser um número',
+          'number.positive': 'O ponto deve ser um número positivo',
+          'any.required': 'O ponto é obrigatório',
+        }),
+      },
+    },
+    { abortEarly: false, messages: customValidateMessages }
+  );
+};

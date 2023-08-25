@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE "tb_user_character" ADD COLUMN     "dexterity" INTEGER NOT NULL DEFAULT 1,
+ADD COLUMN     "intelligence" INTEGER NOT NULL DEFAULT 1,
+ADD COLUMN     "point" INTEGER NOT NULL DEFAULT 10,
+ADD COLUMN     "spentPoint" INTEGER,
+ADD COLUMN     "strength" INTEGER NOT NULL DEFAULT 1;
