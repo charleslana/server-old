@@ -65,9 +65,12 @@ export class UserCharacterRepository {
   }
 
   async delete(id: number): Promise<boolean> {
-    const deletedUser = await prisma.userCharacter.delete({
+    await prisma.userCharacterItem.deleteMany({
+      where: { userCharacterId: id },
+    });
+    const deleted = await prisma.userCharacter.delete({
       where: { id },
     });
-    return !!deletedUser;
+    return !!deleted;
   }
 }

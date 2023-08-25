@@ -26,8 +26,8 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       ],
     },
     async (request: FastifyRequest<{ Body: User }>, _reply) => {
-      await userService.create(request.body);
-      return { message: 'Data created successfully', data: request.body };
+      const create = await userService.create(request.body);
+      return create;
     }
   );
 
@@ -41,7 +41,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
     },
     async (_request, _reply) => {
       const getAll = await userService.getAll();
-      return { message: 'Data fetched successfully', data: getAll };
+      return getAll;
     }
   );
 
@@ -56,7 +56,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
     },
     async (request: FastifyRequest<{ Params: { id: number } }>, _reply) => {
       const get = await userService.getById(request.params.id);
-      return { message: 'Data fetched successfully', data: get };
+      return get;
     }
   );
 

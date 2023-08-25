@@ -69,9 +69,21 @@ export class UserRepository {
     await prisma.role.deleteMany({
       where: { userId: id },
     });
-    const deletedUser = await prisma.user.delete({
+    const userCharacters = await prisma.userCharacter.findMany({
+      where: { userId: id },
+      select: { id: true },
+    });
+    for (const userCharacter of userCharacters) {
+      await prisma.userCharacterItem.deleteMany({
+        where: { userCharacterId: userCharacter.id },
+      });
+    }
+    await prisma.userCharacter.deleteMany({
+      where: { userId: id },
+    });
+    const deleted = await prisma.user.delete({
       where: { id },
     });
-    return !!deletedUser;
+    return !!deleted;
   }
 }

@@ -7,9 +7,9 @@ export function validateCreateUserCharacter() {
     {
       [Segments.BODY]: {
         characterId: Joi.number().positive().required().messages({
-          'number.base': 'O id do personagem deve ser um número válido',
-          'number.positive': 'O id do personagem deve ser um número positivo',
-          'any.required': 'O id do personagem é obrigatório',
+          'number.base': 'O campo {{#label}} deve ser um número válido',
+          'number.positive': 'O campo {{#label}} deve ser um número positivo',
+          'any.required': 'O campo {{#label}} é obrigatório',
         }),
         name: Joi.string()
           .pattern(/^[a-zA-ZÀ-ú0-9_ ]*$/)
@@ -18,15 +18,15 @@ export function validateCreateUserCharacter() {
           .max(30)
           .required()
           .messages({
-            'string.base': 'O campo de nome deve ser uma string válida',
+            'string.base': 'O campo {{#label}} deve ser uma string válida',
             'string.pattern.base':
-              'O nome fornecido não atende ao padrão exigido',
+              'O campo {{#label}} não atende ao padrão exigido',
             'string.min':
-              'O campo de nome deve ter pelo menos {#limit} caracteres',
+              'O campo {{#label}} deve ter pelo menos {#limit} caracteres',
             'string.max':
-              'O campo de nome não deve ter mais de {#limit} caracteres',
-            'any.required': 'O campo de nome é obrigatório',
-            'string.empty': 'O campo de nome não pode estar vazio',
+              'O campo {{#label}} não deve ter mais de {#limit} caracteres',
+            'any.required': 'O campo {{#label}} é obrigatório',
+            'string.empty': 'O campo {{#label}} não pode estar vazio',
           }),
       },
     },
@@ -42,14 +42,15 @@ export const validateUpdateAttribute = () => {
           .valid(...Object.values(AttributeEnum))
           .required()
           .messages({
-            'string.empty': 'O campo atributo é obrigatório',
+            'string.empty': 'O campo {{#label}} é obrigatório',
             'any.only':
-              'O valor do campo atributo deve ser um dos valores válidos: {{#valids}}',
+              'O valor do campo {{#label}} deve ser um dos valores válidos: {{#valids}}',
           }),
-        point: Joi.number().positive().required().messages({
-          'number.base': 'O ponto deve ser um número',
-          'number.positive': 'O ponto deve ser um número positivo',
-          'any.required': 'O ponto é obrigatório',
+        point: Joi.number().positive().max(999).required().messages({
+          'number.base': 'O campo {{#label}} deve ser um número',
+          'number.positive': 'O campo {{#label}} deve ser um número positivo',
+          'number.max': 'O campo {{#label}} não pode ser maior que {{#limit}}',
+          'any.required': 'O campo {{#label}} é obrigatório',
         }),
       },
     },

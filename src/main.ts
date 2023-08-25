@@ -7,6 +7,7 @@ import routesController from './controller/routesController';
 import socketController from './controller/socketController';
 import socketioServer from 'fastify-socket.io';
 import userCharacterController from './controller/userCharacterController';
+import userCharacterItemController from './controller/userCharacterItemController';
 import userController from './controller/userController';
 import { GlobalError } from './handler/GlobalError';
 import { PrismaClient } from '@prisma/client';
@@ -34,6 +35,8 @@ server.register(userController, { prefix: '/v1' });
 server.register(characterController, { prefix: '/v1' });
 
 server.register(userCharacterController, { prefix: '/v1' });
+
+server.register(userCharacterItemController, { prefix: '/v1' });
 
 server.register(routesController);
 
