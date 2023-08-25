@@ -45,8 +45,8 @@ export class UserCharacterService {
     return findAll;
   }
 
-  async delete(id: number, reply: FastifyReply): Promise<void> {
-    await this.getById(id);
+  async delete(id: number, userId: number, reply: FastifyReply): Promise<void> {
+    await this.getByIdAndUserId(id, userId);
     await this.userCharacterRepository.delete(id);
     GlobalSuccess.send(reply, 'Personagem do usuário excluído com sucesso');
   }

@@ -66,7 +66,11 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       request: FastifyRequest<{ Params: { id: number } }>,
       reply: FastifyReply
     ) => {
-      await userCharacterService.delete(request.params.id, reply);
+      await userCharacterService.delete(
+        request.params.id,
+        request.user.id,
+        reply
+      );
     }
   );
 

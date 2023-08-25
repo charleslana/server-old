@@ -29,6 +29,7 @@
     "fastify-socket.io": "^4.0.0",
     "jsonwebtoken": "^9.0.1",
     "pg": "^8.11.3",
+    "prisma": "^5.2.0",
     "socket.io": "^4.7.2"
   },
   "devDependencies": {
