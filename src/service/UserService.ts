@@ -12,16 +12,17 @@ export class UserService {
   private userRepository = new UserRepository();
   private authService = new AuthService();
 
-  async create(user: User): Promise<User> {
+  async create(user: User): Promise<Omit<User, 'password'>> {
     const exist = await this.userRepository.findByEmail(user.email);
     if (exist) {
       throw new GlobalError('E-mail já cadastrado');
     }
     const hashedPassword = this.encrypt(user.password);
-    return await this.userRepository.save({
+    const save = await this.userRepository.save({
       ...user,
       password: hashedPassword,
     });
+    return omitField(save, 'password');
   }
 
   async getById(id: number): Promise<Omit<User, 'password'>> {

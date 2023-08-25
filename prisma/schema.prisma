@@ -29,7 +29,7 @@ model User {
 model Role {
   id        Int      @id @default(autoincrement())
   name      RoleEnum @default(User)
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int      @map("user_id")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
@@ -57,9 +57,9 @@ model UserCharacter {
   dexterity    Int                 @default(1)
   point        Int                 @default(10)
   spentPoint   Int?
-  User         User                @relation(fields: [userId], references: [id])
+  User         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       Int                 @map("user_id")
-  character    Character           @relation(fields: [characterId], references: [id])
+  character    Character           @relation(fields: [characterId], references: [id], onDelete: Cascade)
   characterId  Int                 @map("character_id")
   createdAt    DateTime            @default(now()) @map("created_at")
   updatedAt    DateTime            @default(now()) @updatedAt @map("updated_at")
@@ -82,9 +82,9 @@ model Item {
 model UserCharacterItem {
   id              Int           @id @default(autoincrement())
   equpped         Boolean?
-  UserCharacter   UserCharacter @relation(fields: [userCharacterId], references: [id])
+  UserCharacter   UserCharacter @relation(fields: [userCharacterId], references: [id], onDelete: Cascade)
   userCharacterId Int           @map("user_character_id")
-  item            Item          @relation(fields: [itemId], references: [id])
+  item            Item          @relation(fields: [itemId], references: [id], onDelete: Cascade)
   itemId          Int           @map("item_id")
   createdAt       DateTime      @default(now()) @map("created_at")
   updatedAt       DateTime      @default(now()) @updatedAt @map("updated_at")
