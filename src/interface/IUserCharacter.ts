@@ -5,4 +5,5 @@ import {
 
 export interface IUserCharacter extends PrismaUserCharacter {
   character: Character;
+  maxExperience: number;
 }

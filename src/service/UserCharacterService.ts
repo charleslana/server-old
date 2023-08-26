@@ -3,6 +3,7 @@ import { FastifyReply } from 'fastify';
 import { GlobalError } from '../handler/GlobalError';
 import { GlobalSuccess } from '../handler/GlobalSuccess';
 import { IAttribute } from '../interface/IAttribute';
+import { IUserCharacter } from '../interface/IUserCharacter';
 import { UserCharacter } from '@prisma/client';
 import { UserCharacterRepository } from '../repository/UserCharacterRepository';
 
@@ -30,7 +31,7 @@ export class UserCharacterService {
     return find;
   }
 
-  async getByIdAndUserId(id: number, userId: number): Promise<UserCharacter> {
+  async getByIdAndUserId(id: number, userId: number): Promise<IUserCharacter> {
     const find = await this.userCharacterRepository.findByIdAndUserId(
       id,
       userId
@@ -38,6 +39,7 @@ export class UserCharacterService {
     if (!find) {
       throw new GlobalError('Personagem do usuário não encontrado');
     }
+    find.maxExperience = this.calculateMaxExperience(find.level);
     return find;
   }
 
@@ -68,5 +70,9 @@ export class UserCharacterService {
       attribute.reply,
       'Pontos de atributo adicionado com sucesso'
     );
+  }
+
+  private calculateMaxExperience(level: number): number {
+    return 50 * level;
   }
 }

@@ -17,6 +17,7 @@ model User {
   email      String          @unique @db.VarChar(255)
   password   String
   name       String          @db.VarChar(30)
+  diamond    Int             @default(0)
   bannedTime DateTime?       @map("banned_time")
   createdAt  DateTime        @default(now()) @map("created_at")
   updatedAt  DateTime        @default(now()) @updatedAt @map("updated_at")
@@ -57,6 +58,8 @@ model UserCharacter {
   dexterity    Int                  @default(1)
   point        Int                  @default(10)
   spentPoint   Int?
+  gold         Int                  @default(100)
+  experience   Int                  @default(0)
   User         User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       Int                  @map("user_id")
   character    Character            @relation(fields: [characterId], references: [id], onDelete: Cascade)
