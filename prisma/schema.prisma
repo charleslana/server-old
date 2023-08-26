@@ -49,21 +49,22 @@ model Character {
 }
 
 model UserCharacter {
-  id           Int                 @id @default(autoincrement())
-  name         String              @unique @db.VarChar(255)
-  level        Int                 @default(1)
-  strength     Int                 @default(1)
-  intelligence Int                 @default(1)
-  dexterity    Int                 @default(1)
-  point        Int                 @default(10)
+  id           Int                  @id @default(autoincrement())
+  name         String               @unique @db.VarChar(255)
+  level        Int                  @default(1)
+  strength     Int                  @default(1)
+  intelligence Int                  @default(1)
+  dexterity    Int                  @default(1)
+  point        Int                  @default(10)
   spentPoint   Int?
-  User         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId       Int                 @map("user_id")
-  character    Character           @relation(fields: [characterId], references: [id], onDelete: Cascade)
-  characterId  Int                 @map("character_id")
-  createdAt    DateTime            @default(now()) @map("created_at")
-  updatedAt    DateTime            @default(now()) @updatedAt @map("updated_at")
+  User         User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       Int                  @map("user_id")
+  character    Character            @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  characterId  Int                  @map("character_id")
+  createdAt    DateTime             @default(now()) @map("created_at")
+  updatedAt    DateTime             @default(now()) @updatedAt @map("updated_at")
   items        UserCharacterItem[]
+  skills       UserCharacterSkill[]
 
   @@map(name: "tb_user_character")
 }
@@ -81,7 +82,7 @@ model Item {
 
 model UserCharacterItem {
   id              Int           @id @default(autoincrement())
-  equpped         Boolean?
+  equipped        Boolean?
   UserCharacter   UserCharacter @relation(fields: [userCharacterId], references: [id], onDelete: Cascade)
   userCharacterId Int           @map("user_character_id")
   item            Item          @relation(fields: [itemId], references: [id], onDelete: Cascade)
@@ -90,4 +91,28 @@ model UserCharacterItem {
   updatedAt       DateTime      @default(now()) @updatedAt @map("updated_at")
 
   @@map(name: "tb_user_character_item")
+}
+
+model Skill {
+  id                 Int                  @id @default(autoincrement())
+  name               String               @db.VarChar(255)
+  description        String?
+  createdAt          DateTime             @default(now()) @map("created_at")
+  updatedAt          DateTime             @default(now()) @updatedAt @map("updated_at")
+  UserCharacterSkill UserCharacterSkill[]
+
+  @@map(name: "tb_skill")
+}
+
+model UserCharacterSkill {
+  id              Int           @id @default(autoincrement())
+  level           Int           @default(1)
+  UserCharacter   UserCharacter @relation(fields: [userCharacterId], references: [id], onDelete: Cascade)
+  userCharacterId Int           @map("user_character_id")
+  skill           Skill         @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  skillId         Int           @map("skill_id")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @default(now()) @updatedAt @map("updated_at")
+
+  @@map(name: "tb_user_character_skill")
 }

@@ -26,7 +26,7 @@ export class UserCharacterItemService {
         userCharacterId
       );
     if (!find) {
-      throw new GlobalError('Item do usuário não encontrado');
+      throw new GlobalError('Item do personagem não encontrado');
     }
     return find;
   }
@@ -48,6 +48,6 @@ export class UserCharacterItemService {
   ): Promise<void> {
     await this.getByIdAndUserCharacterId(id, userCharacterId);
     await this.userCharacterItemRepository.delete(id);
-    GlobalSuccess.send(reply, 'Item do usuário excluído com sucesso');
+    GlobalSuccess.send(reply, 'Item do personagem excluído com sucesso');
   }
 }

@@ -13,6 +13,7 @@
     "seed": "npx ts-node prisma/seed.ts",
     "characterSeed": "npx ts-node prisma/characterSeed.ts",
     "itemSeed": "npx ts-node prisma/itemSeed.ts",
+    "skillSeed": "npx ts-node prisma/skillSeed.ts",
     "clear": "rm -rf node_modules && npm i"
   },
   "keywords": [],
