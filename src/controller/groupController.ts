@@ -73,8 +73,9 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       ],
     },
     async (request: FastifyRequest<{ Body: IGroup }>) => {
-      request.body.UserCharacterGroup.userCharacterId =
-        request.session.userCharacterId!;
+      const userCharacterGroup = {} as UserCharacterGroup;
+      userCharacterGroup.userCharacterId = request.session.userCharacterId!;
+      request.body.UserCharacterGroup = userCharacterGroup;
       const update = await groupService.updateName(request.body);
       return update;
     }
