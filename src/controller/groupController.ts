@@ -2,6 +2,7 @@ import { container } from 'tsyringe';
 import { FastifyInstance, FastifyRequest } from 'fastify';
 import { GroupService } from '../service/GroupService';
 import { IGroup } from '../interface/IGroup';
+import { sanitizeHtmlMiddleware } from '../middleware/sanitizeHtmlMiddleware';
 import { UserCharacterGroup } from '@prisma/client';
 import { validateAuthMiddleware } from '../middleware/authMiddleware';
 import { validateBodyMiddleware } from '../middleware/validateBodyMiddleware';
@@ -21,6 +22,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
     {
       preHandler: [
         validateBodyMiddleware(),
+        sanitizeHtmlMiddleware(),
         validateCelebrateMiddleware<{ Body: IGroup }>(validateCreateGroup()),
         validateAuthMiddleware(),
         validateSessionMiddleware(),
@@ -87,17 +89,13 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
   );
 
   fastify.delete(
-    '/:id',
+    '/',
     {
-      preHandler: [
-        validateCelebrateMiddleware<{ Params: { id: number } }>(validateId()),
-        validateAuthMiddleware(),
-        validateSessionMiddleware(),
-      ],
+      preHandler: [validateAuthMiddleware(), validateSessionMiddleware()],
     },
-    async (request: FastifyRequest<{ Params: { id: number } }>) => {
+    async (request: FastifyRequest) => {
       fastify.log.info('Excluir grupo');
-      await groupService.delete(request.params.id);
+      await groupService.delete(request.session.userCharacterId!);
     }
   );
 

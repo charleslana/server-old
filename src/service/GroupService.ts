@@ -1,7 +1,7 @@
 import { delay, inject, injectable } from 'tsyringe';
 import { formatNumber } from '../utils/utils';
 import { GlobalError } from '../handler/GlobalError';
-import { Group, UserCharacter } from '@prisma/client';
+import { Group, RoleGroupEnum, UserCharacter } from '@prisma/client';
 import { GroupRepository } from '../repository/GroupRepository';
 import { IGroup } from '../interface/IGroup';
 import { IRequirementGroup } from '../interface/IRequirementGroup';
@@ -55,9 +55,15 @@ export class GroupService {
     });
   }
 
-  async delete(id: number): Promise<void> {
-    await this.getById(id);
-    await this.repository.delete(id);
+  async delete(userCharacterId: number): Promise<void> {
+    const userCharacter =
+      await this.userCharacterService.getById(userCharacterId);
+    if (!userCharacter.group) {
+      throw new GlobalError('Personagem não participa de grupo');
+    }
+    await this.getById(userCharacter.group.groupId);
+    this.validateRoleGroup([RoleGroupEnum.Leader], userCharacter.group.role);
+    await this.repository.delete(userCharacter.group.groupId);
   }
 
   getGroupRequirements(): IRequirementGroup {
@@ -90,6 +96,15 @@ export class GroupService {
     const exist = await this.repository.existsByName(name, groupId);
     if (exist) {
       throw new GlobalError('Nome de grupo já cadastrado');
+    }
+  }
+
+  private validateRoleGroup(
+    allowedRoles: RoleGroupEnum[],
+    role: RoleGroupEnum
+  ): void {
+    if (!allowedRoles.includes(role)) {
+      throw new GlobalError('Personagem não autorizado', 403);
     }
   }
 }

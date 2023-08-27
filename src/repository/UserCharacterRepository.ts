@@ -36,6 +36,7 @@ export class UserCharacterRepository {
       where: { id },
       include: {
         character: true,
+        group: true,
       },
     })) as IUserCharacter;
   }
@@ -69,5 +70,11 @@ export class UserCharacterRepository {
       where: { id },
     });
     return !!deleted;
+  }
+
+  async countByUserId(userId: number): Promise<number> {
+    return await prisma.userCharacter.count({
+      where: { userId },
+    });
   }
 }

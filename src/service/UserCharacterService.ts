@@ -11,6 +11,10 @@ export class UserCharacterService {
 
   async create(userCharacter: UserCharacter): Promise<UserCharacter> {
     await this.characterService.getById(userCharacter.characterId);
+    const count = await this.repository.countByUserId(userCharacter.userId);
+    if (count >= 5) {
+      throw new GlobalError('Limite de personagem atingido, total: 5');
+    }
     const exist = await this.repository.existsByName(
       userCharacter.name,
       userCharacter.id
@@ -21,7 +25,7 @@ export class UserCharacterService {
     return await this.repository.save(userCharacter);
   }
 
-  async getById(id: number): Promise<UserCharacter> {
+  async getById(id: number): Promise<IUserCharacter> {
     const find = await this.repository.findById(id);
     if (!find) {
       throw new GlobalError('Personagem do usuário não encontrado');
