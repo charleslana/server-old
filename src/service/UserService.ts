@@ -7,16 +7,16 @@ import { User } from '@prisma/client';
 import { UserRepository } from '../repository/UserRepository';
 
 export class UserService {
-  private userRepository = new UserRepository();
+  private repository = new UserRepository();
   private authService = new AuthService();
 
   async create(user: User): Promise<Omit<User, 'password'>> {
-    const exist = await this.userRepository.findByEmail(user.email);
+    const exist = await this.repository.findByEmail(user.email);
     if (exist) {
       throw new GlobalError('E-mail já cadastrado');
     }
     const hashedPassword = this.encrypt(user.password);
-    const save = await this.userRepository.save({
+    const save = await this.repository.save({
       ...user,
       password: hashedPassword,
     });
@@ -24,7 +24,7 @@ export class UserService {
   }
 
   async getById(id: number): Promise<Omit<User, 'password'>> {
-    const find = await this.userRepository.findById(id);
+    const find = await this.repository.findById(id);
     if (!find) {
       throw new GlobalError('Usuário não encontrado');
     }
@@ -32,13 +32,13 @@ export class UserService {
   }
 
   async getAll(): Promise<Omit<User, 'password' | 'email'>[]> {
-    const findAll = await this.userRepository.findAll();
+    const findAll = await this.repository.findAll();
     return findAll.map(user => omitFields(user, ['email', 'password']));
   }
 
   async updateName(user: User): Promise<Omit<User, 'password'> | null> {
     await this.getById(user.id);
-    const update = await this.userRepository.update(user.id, {
+    const update = await this.repository.update(user.id, {
       name: user.name,
     });
     if (update) {
@@ -49,14 +49,14 @@ export class UserService {
 
   async delete(id: number): Promise<void> {
     await this.getById(id);
-    await this.userRepository.delete(id);
+    await this.repository.delete(id);
   }
 
   async authenticateAndGenerateToken(
     email: string,
     password: string
   ): Promise<string> {
-    const find = await this.userRepository.findByEmail(email);
+    const find = await this.repository.findByEmail(email);
     if (!find) {
       throw new GlobalError('Credenciais inválidas');
     }
@@ -74,14 +74,14 @@ export class UserService {
   }
 
   async updatePassword(password: IPassword): Promise<void> {
-    const find = await this.userRepository.findById(password.userId);
+    const find = await this.repository.findById(password.userId);
     if (!find) {
       throw new GlobalError('Usuário não encontrado');
     }
     if (!this.decrypt(password.currentPassword, find.password)) {
       throw new GlobalError('Senha atual inválida');
     }
-    await this.userRepository.update(password.userId, {
+    await this.repository.update(password.userId, {
       password: this.encrypt(password.newPassword),
     });
   }

@@ -1,3 +1,4 @@
+import { container } from 'tsyringe';
 import { FastifyInstance, FastifyRequest } from 'fastify';
 import { GroupService } from '../service/GroupService';
 import { IGroup } from '../interface/IGroup';
@@ -13,7 +14,7 @@ import {
 } from '../middleware/celebrate/groupCelebrate';
 
 function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
-  const groupService = new GroupService();
+  const groupService = container.resolve(GroupService);
 
   fastify.post(
     '/',
@@ -92,6 +93,17 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
     },
     async (request: FastifyRequest<{ Params: { id: number } }>) => {
       await groupService.delete(request.params.id);
+    }
+  );
+
+  fastify.get(
+    '/requirements',
+    {
+      preHandler: [validateAuthMiddleware(), validateSessionMiddleware()],
+    },
+    () => {
+      const get = groupService.getGroupRequirements();
+      return get;
     }
   );
 

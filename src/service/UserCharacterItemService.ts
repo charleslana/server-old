@@ -4,25 +4,24 @@ import { UserCharacterItem } from '@prisma/client';
 import { UserCharacterItemRepository } from '../repository/UserCharacterItemRepository';
 
 export class UserCharacterItemService {
-  private userCharacterItemRepository = new UserCharacterItemRepository();
+  private repository = new UserCharacterItemRepository();
   private itemService = new ItemService();
 
   async create(
     userCharacterItem: UserCharacterItem
   ): Promise<UserCharacterItem> {
     await this.itemService.getById(userCharacterItem.itemId);
-    return await this.userCharacterItemRepository.save(userCharacterItem);
+    return await this.repository.save(userCharacterItem);
   }
 
   async getByIdAndUserCharacterId(
     id: number,
     userCharacterId: number
   ): Promise<UserCharacterItem> {
-    const find =
-      await this.userCharacterItemRepository.findByIdAndUserCharacterId(
-        id,
-        userCharacterId
-      );
+    const find = await this.repository.findByIdAndUserCharacterId(
+      id,
+      userCharacterId
+    );
     if (!find) {
       throw new GlobalError('Item do personagem não encontrado');
     }
@@ -33,14 +32,12 @@ export class UserCharacterItemService {
     userCharacterId: number
   ): Promise<UserCharacterItem[]> {
     const findAll =
-      await this.userCharacterItemRepository.findAllUserCharacterId(
-        userCharacterId
-      );
+      await this.repository.findAllUserCharacterId(userCharacterId);
     return findAll;
   }
 
   async delete(id: number, userCharacterId: number): Promise<void> {
     await this.getByIdAndUserCharacterId(id, userCharacterId);
-    await this.userCharacterItemRepository.delete(id);
+    await this.repository.delete(id);
   }
 }

@@ -1,13 +1,26 @@
+import 'reflect-metadata';
 import cors from '@fastify/cors';
 import fastify, { FastifyInstance } from 'fastify';
 import fastifyCookie from '@fastify/cookie';
 import fastifySession from '@fastify/session';
 import registerRoutes from './route';
 import socketioServer from 'fastify-socket.io';
+import { container } from './container';
 import { GlobalError } from './handler/GlobalError';
 import { PrismaClient } from '@prisma/client';
 
-const server: FastifyInstance = fastify({ logger: true });
+const server: FastifyInstance = fastify({
+  disableRequestLogging: true,
+  logger: {
+    transport: {
+      target: 'pino-pretty',
+      options: {
+        translateTime: 'HH:MM:ss Z',
+        ignore: 'pid,hostname',
+      },
+    },
+  },
+});
 
 server.register(cors, {
   origin: '*',
@@ -27,7 +40,10 @@ server.register(socketioServer);
 
 registerRoutes(server);
 
+server.decorate('container', container);
+
 server.setErrorHandler((error, _request, reply) => {
+  server.log.error(error.message);
   if (error instanceof SyntaxError && error.message.includes('JSON')) {
     return reply.status(400).send({ message: 'Invalid JSON data' });
   }
@@ -49,7 +65,8 @@ server.setErrorHandler((error, _request, reply) => {
   });
 });
 
-server.setNotFoundHandler((_request, reply) => {
+server.setNotFoundHandler((request, reply) => {
+  server.log.error(`Rota não encontrada ${request.raw.url}`);
   reply.status(404).send({
     message: 'Rota não encontrada',
   });
@@ -58,10 +75,12 @@ server.setNotFoundHandler((_request, reply) => {
 const start = async () => {
   try {
     const prisma = new PrismaClient();
-    await prisma.$connect();
+    await prisma
+      .$connect()
+      .then(() => server.log.info('Banco de dados conectado com sucesso'));
     const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
     await server.listen({ port: port });
-    server.log.info(`Server listening on ${server.server.address()}`);
+    server.log.info(`Servidor conectado na porta ${port}`);
   } catch (err) {
     server.log.error(err);
     process.exit(1);

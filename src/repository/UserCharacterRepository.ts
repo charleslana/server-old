@@ -23,33 +23,33 @@ export class UserCharacterRepository {
   }
 
   async findAllUserId(userId: number): Promise<IUserCharacter[]> {
-    return await prisma.userCharacter.findMany({
+    return (await prisma.userCharacter.findMany({
       where: { userId },
       include: {
         character: true,
       },
-    });
+    })) as IUserCharacter[];
   }
 
   async findById(id: number): Promise<IUserCharacter | null> {
-    return await prisma.userCharacter.findUnique({
+    return (await prisma.userCharacter.findUnique({
       where: { id },
       include: {
         character: true,
       },
-    });
+    })) as IUserCharacter;
   }
 
   async findByIdAndUserId(
     id: number,
     userId: number
   ): Promise<IUserCharacter | null> {
-    return await prisma.userCharacter.findUnique({
+    return (await prisma.userCharacter.findUnique({
       where: { id, userId },
       include: {
         character: true,
       },
-    });
+    })) as IUserCharacter;
   }
 
   async existsByName(name: string, id: number | null = null): Promise<boolean> {

@@ -1,10 +1,13 @@
+import { container } from 'tsyringe';
 import { FastifyInstance, FastifyRequest } from 'fastify';
 import { UserCharacterGroupService } from '../service/UserCharacterGroupService';
 import { validateAuthMiddleware } from '../middleware/authMiddleware';
 import { validateSessionMiddleware } from '../middleware/sessionMiddleware';
 
 function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
-  const userCharacterGroupService = new UserCharacterGroupService();
+  const userCharacterGroupService = container.resolve(
+    UserCharacterGroupService
+  );
 
   fastify.get(
     '/',

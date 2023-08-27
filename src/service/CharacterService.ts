@@ -3,10 +3,10 @@ import { CharacterRepository } from '../repository/CharacterRepository';
 import { GlobalError } from '../handler/GlobalError';
 
 export class CharacterService {
-  private characterRepository = new CharacterRepository();
+  private repository = new CharacterRepository();
 
   async getById(id: number): Promise<Character> {
-    const find = await this.characterRepository.findById(id);
+    const find = await this.repository.findById(id);
     if (!find) {
       throw new GlobalError('Personagem não encontrado');
     }
@@ -14,7 +14,7 @@ export class CharacterService {
   }
 
   async getAll(): Promise<Character[]> {
-    const findAll = await this.characterRepository.findAll();
+    const findAll = await this.repository.findAll();
     return findAll;
   }
 }

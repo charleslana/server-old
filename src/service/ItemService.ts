@@ -3,10 +3,10 @@ import { Item } from '@prisma/client';
 import { ItemRepository } from '../repository/ItemRepository';
 
 export class ItemService {
-  private itemRepository = new ItemRepository();
+  private repository = new ItemRepository();
 
   async getById(id: number): Promise<Item> {
-    const find = await this.itemRepository.findById(id);
+    const find = await this.repository.findById(id);
     if (!find) {
       throw new GlobalError('Item não encontrado');
     }

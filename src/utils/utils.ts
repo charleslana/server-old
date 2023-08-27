@@ -34,3 +34,7 @@ export const formatDate = (date: Date): string => {
     minute: '2-digit',
   });
 };
+
+export const formatNumber = (number: number): string => {
+  return number.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+};

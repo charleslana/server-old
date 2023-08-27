@@ -40,4 +40,12 @@ export class UserCharacterGroupRepository {
     });
     return !!deleted;
   }
+
+  async isUserCharacterInGroup(userCharacterId: number): Promise<boolean> {
+    const find = await prisma.userCharacterGroup.findUnique({
+      where: { userCharacterId },
+    });
+
+    return !!find;
+  }
 }
