@@ -1,34 +1,35 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
-import { RoleEnum, UserCharacterItem } from '@prisma/client';
-import { UserCharacterItemService } from '../service/UserCharacterItemService';
-import { UserCharacterService } from '../service/UserCharacterService';
+import { GroupService } from '../service/GroupService';
+import { IGroup } from '../interface/IGroup';
+import { UserCharacterGroup } from '@prisma/client';
 import { validateAuthMiddleware } from '../middleware/authMiddleware';
 import { validateBodyMiddleware } from '../middleware/validateBodyMiddleware';
 import { validateCelebrateMiddleware } from '../middleware/validateCelebrateMiddleware';
-import { validateCreateUserCharacterItem } from '../middleware/celebrate/userCharacterItemCelebrate';
 import { validateId } from '../middleware/celebrate/commonCelebrate';
-import { validateRoleMiddleware } from '../middleware/roleMiddleware';
 import { validateSessionMiddleware } from '../middleware/sessionMiddleware';
+import {
+  validateCreateGroup,
+  validateUpdateGroupName,
+} from '../middleware/celebrate/groupCelebrate';
 
 function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
-  const userCharacterItemService = new UserCharacterItemService();
-  const userCharacterService = new UserCharacterService();
+  const groupService = new GroupService();
 
   fastify.post(
     '/',
     {
       preHandler: [
         validateBodyMiddleware(),
-        validateCelebrateMiddleware<{ Body: UserCharacterItem }>(
-          validateCreateUserCharacterItem()
-        ),
+        validateCelebrateMiddleware<{ Body: IGroup }>(validateCreateGroup()),
         validateAuthMiddleware(),
-        validateRoleMiddleware([RoleEnum.Admin]),
+        validateSessionMiddleware(),
       ],
     },
-    async (request: FastifyRequest<{ Body: UserCharacterItem }>) => {
-      await userCharacterService.getById(request.body.userCharacterId);
-      const create = await userCharacterItemService.create(request.body);
+    async (request: FastifyRequest<{ Body: IGroup }>) => {
+      const userCharacterGroup = {} as UserCharacterGroup;
+      userCharacterGroup.userCharacterId = request.session.userCharacterId!;
+      request.body.UserCharacterGroup = userCharacterGroup;
+      const create = await groupService.create(request.body);
       return create;
     }
   );
@@ -38,10 +39,8 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
     {
       preHandler: [validateAuthMiddleware(), validateSessionMiddleware()],
     },
-    async (request: FastifyRequest) => {
-      const getAll = await userCharacterItemService.getAllByUserCharacterId(
-        request.session.userCharacterId!
-      );
+    async () => {
+      const getAll = await groupService.getAll();
       return getAll;
     }
   );
@@ -56,11 +55,28 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       ],
     },
     async (request: FastifyRequest<{ Params: { id: number } }>) => {
-      const get = await userCharacterItemService.getByIdAndUserCharacterId(
-        request.params.id,
-        request.session.userCharacterId!
-      );
+      const get = await groupService.getById(request.params.id);
       return get;
+    }
+  );
+
+  fastify.put(
+    '/name',
+    {
+      preHandler: [
+        validateBodyMiddleware(),
+        validateCelebrateMiddleware<{ Body: IGroup }>(
+          validateUpdateGroupName()
+        ),
+        validateAuthMiddleware(),
+        validateSessionMiddleware(),
+      ],
+    },
+    async (request: FastifyRequest<{ Body: IGroup }>) => {
+      request.body.UserCharacterGroup.userCharacterId =
+        request.session.userCharacterId!;
+      const update = await groupService.updateName(request.body);
+      return update;
     }
   );
 
@@ -77,23 +93,19 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       request: FastifyRequest<{ Params: { id: number } }>,
       reply: FastifyReply
     ) => {
-      await userCharacterItemService.delete(
-        request.params.id,
-        request.session.userCharacterId!,
-        reply
-      );
+      await groupService.delete(request.params.id, reply);
     }
   );
 
   done();
 }
 
-export default function userCharacterItemController(
+export default function groupController(
   fastify: FastifyInstance,
   _: unknown,
   done: () => void
 ) {
-  fastify.register(createRoute, { prefix: '/user/character/item' });
+  fastify.register(createRoute, { prefix: '/group' });
 
   done();
 }

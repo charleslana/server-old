@@ -15,7 +15,7 @@ export function validateCreateUserCharacter() {
           .pattern(/^[a-zA-ZÀ-ú0-9_ ]*$/)
           .trim()
           .min(3)
-          .max(30)
+          .max(20)
           .required()
           .messages({
             'string.base': 'O campo {{#label}} deve ser uma string válida',

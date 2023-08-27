@@ -4,13 +4,13 @@ import { UserCharacter } from '@prisma/client';
 import { UserCharacterService } from '../service/UserCharacterService';
 import { validateAuthMiddleware } from '../middleware/authMiddleware';
 import { validateBodyMiddleware } from '../middleware/validateBodyMiddleware';
-import { validateCelebrateMiddleware } from '../middleware/celebrate/validateCelebrateMiddleware';
+import { validateCelebrateMiddleware } from '../middleware/validateCelebrateMiddleware';
 import { validateId } from '../middleware/celebrate/commonCelebrate';
 import { validateSessionMiddleware } from '../middleware/sessionMiddleware';
 import {
   validateCreateUserCharacter,
   validateUpdateAttribute,
-} from '../middleware/celebrate/userCharacterMiddleware';
+} from '../middleware/celebrate/userCharacterCelebrate';
 
 function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
   const userCharacterService = new UserCharacterService();
@@ -26,7 +26,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
         validateAuthMiddleware(),
       ],
     },
-    async (request: FastifyRequest<{ Body: UserCharacter }>, _reply) => {
+    async (request: FastifyRequest<{ Body: UserCharacter }>) => {
       request.body.userId = request.user.id;
       const create = await userCharacterService.create(request.body);
       return create;
@@ -38,7 +38,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
     {
       preHandler: [validateAuthMiddleware()],
     },
-    async (request: FastifyRequest, _reply) => {
+    async (request: FastifyRequest) => {
       const getAll = await userCharacterService.getAllByUserId(request.user.id);
       return getAll;
     }
@@ -52,7 +52,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
         validateAuthMiddleware(),
       ],
     },
-    async (request: FastifyRequest<{ Params: { id: number } }>, _reply) => {
+    async (request: FastifyRequest<{ Params: { id: number } }>) => {
       const get = await userCharacterService.getById(request.params.id);
       return get;
     }
@@ -86,7 +86,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
         validateAuthMiddleware(),
       ],
     },
-    async (request: FastifyRequest<{ Params: { id: number } }>, _reply) => {
+    async (request: FastifyRequest<{ Params: { id: number } }>) => {
       const get = await userCharacterService.getByIdAndUserId(
         request.params.id,
         request.user.id
@@ -100,7 +100,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
     {
       preHandler: [validateAuthMiddleware()],
     },
-    async (request: FastifyRequest, _reply) => {
+    async (request: FastifyRequest) => {
       request.session.userCharacterId = undefined;
     }
   );
@@ -110,7 +110,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
     {
       preHandler: [validateAuthMiddleware(), validateSessionMiddleware()],
     },
-    async (request: FastifyRequest, _reply) => {
+    async (request: FastifyRequest) => {
       const get = await userCharacterService.getByIdAndUserId(
         request.session.userCharacterId!,
         request.user.id

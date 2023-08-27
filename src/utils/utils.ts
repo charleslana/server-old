@@ -2,6 +2,7 @@ export function omitField<T extends Record<string, unknown>, K extends keyof T>(
   obj: T,
   field: K
 ): Omit<T, K> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { [field]: _omittedField, ...rest } = obj;
   return rest as Omit<T, K>;
 }

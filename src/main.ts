@@ -1,15 +1,9 @@
-import characterController from './controller/characterController';
 import cors from '@fastify/cors';
 import fastify, { FastifyInstance } from 'fastify';
 import fastifyCookie from '@fastify/cookie';
 import fastifySession from '@fastify/session';
-import routesController from './controller/routesController';
-import socketController from './controller/socketController';
+import registerRoutes from './route';
 import socketioServer from 'fastify-socket.io';
-import userCharacterController from './controller/userCharacterController';
-import userCharacterItemController from './controller/userCharacterItemController';
-import userCharacterSkillController from './controller/userCharacterSkillController';
-import userController from './controller/userController';
 import { GlobalError } from './handler/GlobalError';
 import { PrismaClient } from '@prisma/client';
 
@@ -31,19 +25,7 @@ server.register(fastifySession, {
 
 server.register(socketioServer);
 
-server.register(userController, { prefix: '/v1' });
-
-server.register(characterController, { prefix: '/v1' });
-
-server.register(userCharacterController, { prefix: '/v1' });
-
-server.register(userCharacterItemController, { prefix: '/v1' });
-
-server.register(userCharacterSkillController, { prefix: '/v1' });
-
-server.register(routesController);
-
-server.register(socketController);
+registerRoutes(server);
 
 server.setErrorHandler((error, _request, reply) => {
   if (error instanceof SyntaxError && error.message.includes('JSON')) {

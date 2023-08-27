@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 
-export const validateBodyMiddleware = async (
+export const validateMiddleware = async (
   request: FastifyRequest,
   reply: FastifyReply
 ) => {

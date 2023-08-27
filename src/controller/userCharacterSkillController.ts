@@ -1,7 +1,7 @@
 import { FastifyInstance, FastifyRequest } from 'fastify';
 import { UserCharacterSkillService } from '../service/UserCharacterSkillService';
 import { validateAuthMiddleware } from '../middleware/authMiddleware';
-import { validateCelebrateMiddleware } from '../middleware/celebrate/validateCelebrateMiddleware';
+import { validateCelebrateMiddleware } from '../middleware/validateCelebrateMiddleware';
 import { validateId } from '../middleware/celebrate/commonCelebrate';
 import { validateSessionMiddleware } from '../middleware/sessionMiddleware';
 
@@ -13,7 +13,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
     {
       preHandler: [validateAuthMiddleware(), validateSessionMiddleware()],
     },
-    async (request: FastifyRequest, _reply) => {
+    async (request: FastifyRequest) => {
       const getAll = await userCharacterSkillService.getAllByUserCharacterId(
         request.session.userCharacterId!
       );
@@ -30,7 +30,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
         validateSessionMiddleware(),
       ],
     },
-    async (request: FastifyRequest<{ Params: { id: number } }>, _reply) => {
+    async (request: FastifyRequest<{ Params: { id: number } }>) => {
       const get = await userCharacterSkillService.getByIdAndUserCharacterId(
         request.params.id,
         request.session.userCharacterId!

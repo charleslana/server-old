@@ -60,13 +60,8 @@ export function validateUpdateUserName() {
   return celebrate(
     {
       [Segments.BODY]: {
-        id: Joi.number().positive().required().messages({
-          'number.base': 'O campo {{#label}} deve ser um número válido',
-          'number.positive': 'O campo {{#label}} deve ser um número positivo',
-          'any.required': 'O campo {{#label}} é obrigatório',
-        }),
         name: Joi.string()
-          .pattern(/^[a-zA-ZÀ-ú0-9_ ]*$/)
+          .pattern(/^[a-zA-ZÀ-ú ]*$/)
           .trim()
           .min(3)
           .max(30)

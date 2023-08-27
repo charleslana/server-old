@@ -50,21 +50,6 @@ export class UserRepository {
     });
   }
 
-  async existsByName(
-    name: string,
-    userId: number | null = null
-  ): Promise<boolean> {
-    const userWithSameName = await prisma.user.findFirst({
-      where: {
-        name,
-        NOT: {
-          id: userId || undefined,
-        },
-      },
-    });
-    return userWithSameName !== null;
-  }
-
   async delete(id: number): Promise<boolean> {
     const deleted = await prisma.user.delete({
       where: { id },

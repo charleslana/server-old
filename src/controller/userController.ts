@@ -4,7 +4,7 @@ import { RoleEnum, User } from '@prisma/client';
 import { UserService } from '../service/UserService';
 import { validateAuthMiddleware } from '../middleware/authMiddleware';
 import { validateBodyMiddleware } from '../middleware/validateBodyMiddleware';
-import { validateCelebrateMiddleware } from '../middleware/celebrate/validateCelebrateMiddleware';
+import { validateCelebrateMiddleware } from '../middleware/validateCelebrateMiddleware';
 import { validateId } from '../middleware/celebrate/commonCelebrate';
 import { validateRoleMiddleware } from '../middleware/roleMiddleware';
 import {
@@ -12,7 +12,7 @@ import {
   validateLogin,
   validatePassword,
   validateUpdateUserName,
-} from '../middleware/celebrate/userMiddleware';
+} from '../middleware/celebrate/userCelebrate';
 
 function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
   const userService = new UserService();
@@ -25,7 +25,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
         validateCelebrateMiddleware<{ Body: User }>(validateCreateUser()),
       ],
     },
-    async (request: FastifyRequest<{ Body: User }>, _reply) => {
+    async (request: FastifyRequest<{ Body: User }>) => {
       const create = await userService.create(request.body);
       return create;
     }
@@ -39,7 +39,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
         validateRoleMiddleware([RoleEnum.Admin]),
       ],
     },
-    async (_request, _reply) => {
+    async () => {
       const getAll = await userService.getAll();
       return getAll;
     }
@@ -54,25 +54,25 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
         validateRoleMiddleware([RoleEnum.Admin]),
       ],
     },
-    async (request: FastifyRequest<{ Params: { id: number } }>, _reply) => {
+    async (request: FastifyRequest<{ Params: { id: number } }>) => {
       const get = await userService.getById(request.params.id);
       return get;
     }
   );
 
   fastify.put(
-    '/',
+    '/name',
     {
       preHandler: [
         validateBodyMiddleware(),
         validateCelebrateMiddleware<{ Body: User }>(validateUpdateUserName()),
         validateAuthMiddleware(),
-        validateRoleMiddleware([RoleEnum.Admin]),
       ],
     },
-    async (request: FastifyRequest<{ Body: User }>, _reply) => {
-      await userService.updateName(request.body);
-      return { message: 'Data updated successfully', data: request.body };
+    async (request: FastifyRequest<{ Body: User }>) => {
+      request.body.id = request.user.id;
+      const update = await userService.updateName(request.body);
+      return update;
     }
   );
 
@@ -104,8 +104,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       ],
     },
     async (
-      request: FastifyRequest<{ Body: { email: string; password: string } }>,
-      _reply
+      request: FastifyRequest<{ Body: { email: string; password: string } }>
     ) => {
       const token = await userService.authenticateAndGenerateToken(
         request.body.email,
@@ -120,7 +119,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
     {
       preHandler: [validateAuthMiddleware()],
     },
-    async (request: FastifyRequest, _reply) => {
+    async (request: FastifyRequest) => {
       const get = await userService.getById(request.user.id);
       return get;
     }

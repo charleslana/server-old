@@ -12,6 +12,12 @@ enum RoleEnum {
   User
 }
 
+enum RoleGroupEnum {
+  Leader
+  Master
+  Member
+}
+
 model User {
   id         Int             @id @default(autoincrement())
   email      String          @unique @db.VarChar(255)
@@ -51,7 +57,7 @@ model Character {
 
 model UserCharacter {
   id           Int                  @id @default(autoincrement())
-  name         String               @unique @db.VarChar(255)
+  name         String               @unique @db.VarChar(20)
   level        Int                  @default(1)
   strength     Int                  @default(1)
   intelligence Int                  @default(1)
@@ -68,6 +74,7 @@ model UserCharacter {
   updatedAt    DateTime             @default(now()) @updatedAt @map("updated_at")
   items        UserCharacterItem[]
   skills       UserCharacterSkill[]
+  group        UserCharacterGroup?
 
   @@map(name: "tb_user_character")
 }
@@ -118,4 +125,32 @@ model UserCharacterSkill {
   updatedAt       DateTime      @default(now()) @updatedAt @map("updated_at")
 
   @@map(name: "tb_user_character_skill")
+}
+
+model Group {
+  id                 Int                  @id @default(autoincrement())
+  name               String               @db.VarChar(20)
+  description        String?              @db.VarChar(255)
+  level              Int                  @default(1)
+  experience         Int                  @default(0)
+  requiredLevel      Int?
+  createdAt          DateTime             @default(now()) @map("created_at")
+  updatedAt          DateTime             @default(now()) @updatedAt @map("updated_at")
+  UserCharacterGroup UserCharacterGroup[]
+
+  @@map(name: "tb_group")
+}
+
+model UserCharacterGroup {
+  id              Int           @id @default(autoincrement())
+  point           Int?
+  role            RoleGroupEnum @default(Member)
+  UserCharacter   UserCharacter @relation(fields: [userCharacterId], references: [id], onDelete: Cascade)
+  userCharacterId Int           @unique @map("user_character_id")
+  group           Group         @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId         Int           @map("group_id")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @default(now()) @updatedAt @map("updated_at")
+
+  @@map(name: "tb_user_character_group")
 }

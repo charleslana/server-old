@@ -38,15 +38,15 @@ export class UserService {
     return findAll.map(user => omitFields(user, ['email', 'password']));
   }
 
-  async updateName(user: User): Promise<User | null> {
+  async updateName(user: User): Promise<Omit<User, 'password'> | null> {
     await this.getById(user.id);
-    const exist = await this.userRepository.existsByName(user.name, user.id);
-    if (exist) {
-      throw new GlobalError('Nome já cadastrado');
-    }
-    return await this.userRepository.update(user.id, {
+    const update = await this.userRepository.update(user.id, {
       name: user.name,
     });
+    if (update) {
+      return omitField(update, 'password');
+    }
+    return null;
   }
 
   async delete(id: number, reply: FastifyReply): Promise<void> {

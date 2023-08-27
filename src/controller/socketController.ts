@@ -9,19 +9,14 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
     reply.send(data);
   });
 
-  fastify.get('/hello', (_request, _reply) => {
-    console.log('hello');
-    fastify.io.emit('hello');
-  });
-
   fastify.io.on('connection', socket => {
-    console.log('a user connected');
+    fastify.log.info('a user connected');
     socket.on('disconnect', () => {
-      console.log('user disconnected');
+      fastify.log.info('user disconnected');
     });
 
     socket.on('chat message', msg => {
-      console.log('message: ' + msg);
+      fastify.log.info('message: ' + msg);
       fastify.io.emit('chat message', msg);
     });
   });
@@ -34,7 +29,7 @@ export default function socketController(
   _: unknown,
   done: () => void
 ) {
-  fastify.register(createRoute, { prefix: '/v1/socket' });
+  fastify.register(createRoute, { prefix: '/socket' });
 
   done();
 }
