@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import cors from '@fastify/cors';
+import CronJobService from './service/CronjobService';
 import fastify, { FastifyInstance } from 'fastify';
 import fastifyCookie from '@fastify/cookie';
 import fastifySession from '@fastify/session';
@@ -43,7 +44,6 @@ registerRoutes(server);
 server.decorate('container', container);
 
 server.setErrorHandler((error, _request, reply) => {
-  server.log.error(error.message);
   if (error instanceof SyntaxError && error.message.includes('JSON')) {
     return reply.status(400).send({ message: 'Invalid JSON data' });
   }
@@ -63,6 +63,7 @@ server.setErrorHandler((error, _request, reply) => {
     message: 'Internal Server Error',
     error: error.message,
   });
+  server.log.error(error.message);
 });
 
 server.setNotFoundHandler((request, reply) => {
@@ -81,6 +82,8 @@ const start = async () => {
     const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
     await server.listen({ port: port });
     server.log.info(`Servidor conectado na porta ${port}`);
+    const cron = new CronJobService(server);
+    cron.start();
   } catch (err) {
     server.log.error(err);
     process.exit(1);

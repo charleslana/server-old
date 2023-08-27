@@ -15,6 +15,9 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       preHandler: [validateAuthMiddleware(), validateSessionMiddleware()],
     },
     async (request: FastifyRequest) => {
+      fastify.log.info(
+        `Obter personagem do grupo pelo id ${request.session.userCharacterId}`
+      );
       const get = await userCharacterGroupService.getByIdAndUserCharacterId(
         request.session.userCharacterId!
       );
@@ -28,6 +31,9 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       preHandler: [validateAuthMiddleware(), validateSessionMiddleware()],
     },
     async (request: FastifyRequest) => {
+      fastify.log.info(
+        `Excluir personagem do grupo pelo id ${request.session.userCharacterId}`
+      );
       await userCharacterGroupService.deleteByUserCharacterId(
         request.session.userCharacterId!
       );

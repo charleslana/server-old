@@ -13,6 +13,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       preHandler: [validateAuthMiddleware()],
     },
     async () => {
+      fastify.log.info('Obter todos os personagens');
       const getAll = await characterService.getAll();
       return getAll;
     }
@@ -27,6 +28,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       ],
     },
     async (request: FastifyRequest<{ Params: { id: number } }>) => {
+      fastify.log.info(`Obter personagem pelo id ${request.params.id}`);
       const get = await characterService.getById(request.params.id);
       return get;
     }

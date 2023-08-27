@@ -62,7 +62,7 @@ export class GroupService {
 
   getGroupRequirements(): IRequirementGroup {
     const requirementGroup = {} as IRequirementGroup;
-    requirementGroup.level = 1;
+    requirementGroup.level = 30;
     requirementGroup.gold = 50000;
     return requirementGroup;
   }

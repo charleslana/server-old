@@ -26,6 +26,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       ],
     },
     async (request: FastifyRequest<{ Body: User }>) => {
+      fastify.log.info('Criar usuário');
       const create = await userService.create(request.body);
       return create;
     }
@@ -40,6 +41,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       ],
     },
     async () => {
+      fastify.log.warn('Obter todos usuários');
       const getAll = await userService.getAll();
       return getAll;
     }
@@ -55,6 +57,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       ],
     },
     async (request: FastifyRequest<{ Params: { id: number } }>) => {
+      fastify.log.warn(`Obter usuário pelo id ${request.params.id}`);
       const get = await userService.getById(request.params.id);
       return get;
     }
@@ -70,6 +73,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       ],
     },
     async (request: FastifyRequest<{ Body: User }>) => {
+      fastify.log.info('Atualizar nome do usuário');
       request.body.id = request.user.id;
       const update = await userService.updateName(request.body);
       return update;
@@ -86,6 +90,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       ],
     },
     async (request: FastifyRequest<{ Params: { id: number } }>) => {
+      fastify.log.warn(`Excluir usuário ${request.params.id}`);
       await userService.delete(request.params.id);
     }
   );
@@ -103,6 +108,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
     async (
       request: FastifyRequest<{ Body: { email: string; password: string } }>
     ) => {
+      fastify.log.info('Realizar autenticação');
       const token = await userService.authenticateAndGenerateToken(
         request.body.email,
         request.body.password
@@ -117,6 +123,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       preHandler: [validateAuthMiddleware()],
     },
     async (request: FastifyRequest) => {
+      fastify.log.info(`Obter perfil do usuário ${request.user.id}`);
       const get = await userService.getById(request.user.id);
       return get;
     }
@@ -132,6 +139,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       ],
     },
     async (request: FastifyRequest<{ Body: IPassword }>) => {
+      fastify.log.info('Atualizar senha do usuário');
       request.body.userId = request.user.id;
       await userService.updatePassword(request.body);
     }

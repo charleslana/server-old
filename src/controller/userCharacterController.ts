@@ -27,6 +27,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       ],
     },
     async (request: FastifyRequest<{ Body: UserCharacter }>) => {
+      fastify.log.info('Criar personagem');
       request.body.userId = request.user.id;
       const create = await userCharacterService.create(request.body);
       return create;
@@ -39,6 +40,9 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       preHandler: [validateAuthMiddleware()],
     },
     async (request: FastifyRequest) => {
+      fastify.log.info(
+        `Obter todos os personagens do usuário ${request.user.id}`
+      );
       const getAll = await userCharacterService.getAllByUserId(request.user.id);
       return getAll;
     }
@@ -53,6 +57,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       ],
     },
     async (request: FastifyRequest<{ Params: { id: number } }>) => {
+      fastify.log.info(`Obter personagem pelo id ${request.params.id}`);
       const get = await userCharacterService.getById(request.params.id);
       return get;
     }
@@ -67,6 +72,9 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       ],
     },
     async (request: FastifyRequest<{ Params: { id: number } }>) => {
+      fastify.log.info(
+        `Excluir personagem do usuário ${request.user.id} pelo id ${request.params.id}`
+      );
       await userCharacterService.delete(request.params.id, request.user.id);
     }
   );
@@ -80,6 +88,9 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       ],
     },
     async (request: FastifyRequest<{ Params: { id: number } }>) => {
+      fastify.log.info(
+        `Selecionar personagem do usuário ${request.user.id} pelo id ${request.params.id}`
+      );
       const get = await userCharacterService.getByIdAndUserId(
         request.params.id,
         request.user.id
@@ -91,9 +102,12 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
   fastify.get(
     '/logout',
     {
-      preHandler: [validateAuthMiddleware()],
+      preHandler: [validateAuthMiddleware(), validateSessionMiddleware()],
     },
     async (request: FastifyRequest) => {
+      fastify.log.info(
+        `Logout do personagem selecionado ${request.session.userCharacterId}`
+      );
       request.session.userCharacterId = undefined;
     }
   );
@@ -104,6 +118,9 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       preHandler: [validateAuthMiddleware(), validateSessionMiddleware()],
     },
     async (request: FastifyRequest) => {
+      fastify.log.info(
+        `Obter perfil do personagem do usuário ${request.user.id} pelo id ${request.session.userCharacterId}`
+      );
       const get = await userCharacterService.getByIdAndUserId(
         request.session.userCharacterId!,
         request.user.id
@@ -125,6 +142,9 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       ],
     },
     async (request: FastifyRequest<{ Body: IAttribute }>) => {
+      fastify.log.info(
+        `Atualizar atributo do personagem do usuário ${request.user.id} pelo id ${request.session.userCharacterId}`
+      );
       request.body.userId = request.user.id;
       request.body.id = request.session.userCharacterId!;
       await userCharacterService.updateAttribute(request.body);

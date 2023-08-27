@@ -27,6 +27,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       ],
     },
     async (request: FastifyRequest<{ Body: IGroup }>) => {
+      fastify.log.info('Criar grupo');
       const userCharacterGroup = {} as UserCharacterGroup;
       userCharacterGroup.userCharacterId = request.session.userCharacterId!;
       request.body.UserCharacterGroup = userCharacterGroup;
@@ -41,6 +42,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       preHandler: [validateAuthMiddleware(), validateSessionMiddleware()],
     },
     async () => {
+      fastify.log.info('Obter todos os grupos');
       const getAll = await groupService.getAll();
       return getAll;
     }
@@ -56,6 +58,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       ],
     },
     async (request: FastifyRequest<{ Params: { id: number } }>) => {
+      fastify.log.info(`Obter grupo pelo id ${request.params.id}`);
       const get = await groupService.getById(request.params.id);
       return get;
     }
@@ -74,6 +77,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       ],
     },
     async (request: FastifyRequest<{ Body: IGroup }>) => {
+      fastify.log.info('Atualizar nome do grupo');
       const userCharacterGroup = {} as UserCharacterGroup;
       userCharacterGroup.userCharacterId = request.session.userCharacterId!;
       request.body.UserCharacterGroup = userCharacterGroup;
@@ -92,6 +96,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       ],
     },
     async (request: FastifyRequest<{ Params: { id: number } }>) => {
+      fastify.log.info('Excluir grupo');
       await groupService.delete(request.params.id);
     }
   );
@@ -102,6 +107,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       preHandler: [validateAuthMiddleware(), validateSessionMiddleware()],
     },
     () => {
+      fastify.log.info('Obter requerimentos do grupo');
       const get = groupService.getGroupRequirements();
       return get;
     }

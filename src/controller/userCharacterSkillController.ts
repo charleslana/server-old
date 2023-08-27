@@ -14,6 +14,9 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       preHandler: [validateAuthMiddleware(), validateSessionMiddleware()],
     },
     async (request: FastifyRequest) => {
+      fastify.log.info(
+        `Obter todas as habilidades do personagem ${request.session.userCharacterId}`
+      );
       const getAll = await userCharacterSkillService.getAllByUserCharacterId(
         request.session.userCharacterId!
       );
@@ -31,6 +34,9 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       ],
     },
     async (request: FastifyRequest<{ Params: { id: number } }>) => {
+      fastify.log.info(
+        `Obter habilidade do personagem ${request.session.userCharacterId} pelo id ${request.params.id}`
+      );
       const get = await userCharacterSkillService.getByIdAndUserCharacterId(
         request.params.id,
         request.session.userCharacterId!

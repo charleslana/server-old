@@ -27,6 +27,9 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       ],
     },
     async (request: FastifyRequest<{ Body: UserCharacterItem }>) => {
+      fastify.log.warn(
+        `Criar item para o personagem pelo id ${request.body.userCharacterId}`
+      );
       await userCharacterService.getById(request.body.userCharacterId);
       const create = await userCharacterItemService.create(request.body);
       return create;
@@ -39,6 +42,9 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       preHandler: [validateAuthMiddleware(), validateSessionMiddleware()],
     },
     async (request: FastifyRequest) => {
+      fastify.log.info(
+        `Obter todos os itens do personagem ${request.session.userCharacterId}`
+      );
       const getAll = await userCharacterItemService.getAllByUserCharacterId(
         request.session.userCharacterId!
       );
@@ -56,6 +62,9 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       ],
     },
     async (request: FastifyRequest<{ Params: { id: number } }>) => {
+      fastify.log.info(
+        `Obter item do personagem ${request.session.userCharacterId} pelo id ${request.params.id}`
+      );
       const get = await userCharacterItemService.getByIdAndUserCharacterId(
         request.params.id,
         request.session.userCharacterId!
@@ -74,6 +83,9 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       ],
     },
     async (request: FastifyRequest<{ Params: { id: number } }>) => {
+      fastify.log.info(
+        `Excluir item do personagem ${request.session.userCharacterId} pelo id ${request.params.id}`
+      );
       await userCharacterItemService.delete(
         request.params.id,
         request.session.userCharacterId!
