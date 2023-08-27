@@ -16,7 +16,7 @@ const server: FastifyInstance = fastify({
     transport: {
       target: 'pino-pretty',
       options: {
-        translateTime: 'HH:MM:ss Z',
+        translateTime: 'SYS:HH:MM:ss Z',
         ignore: 'pid,hostname',
       },
     },

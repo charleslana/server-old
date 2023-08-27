@@ -7,5 +7,5 @@ import {
 export interface IUserCharacter extends PrismaUserCharacter {
   character: Character;
   maxExperience: number;
-  group: UserCharacterGroup;
+  group?: UserCharacterGroup;
 }
