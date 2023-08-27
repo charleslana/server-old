@@ -1,7 +1,5 @@
 import { CharacterService } from './CharacterService';
-import { FastifyReply } from 'fastify';
 import { GlobalError } from '../handler/GlobalError';
-import { GlobalSuccess } from '../handler/GlobalSuccess';
 import { IAttribute } from '../interface/IAttribute';
 import { IUserCharacter } from '../interface/IUserCharacter';
 import { UserCharacter } from '@prisma/client';
@@ -48,28 +46,23 @@ export class UserCharacterService {
     return findAll;
   }
 
-  async delete(id: number, userId: number, reply: FastifyReply): Promise<void> {
+  async delete(id: number, userId: number): Promise<void> {
     await this.getByIdAndUserId(id, userId);
     await this.userCharacterRepository.delete(id);
-    GlobalSuccess.send(reply, 'Personagem do usuário excluído com sucesso');
   }
 
-  async updateAttribute(attribute: IAttribute): Promise<void> {
+  async updateAttribute(attribute: IAttribute): Promise<UserCharacter | null> {
     const find = await this.getByIdAndUserId(attribute.id, attribute.userId);
     if (find.point < attribute.point) {
       throw new GlobalError('Pontos de atributos insuficiente');
     }
     const spentPoint = find.spentPoint ?? 0;
     const attributeToUpdate = attribute.attribute;
-    await this.userCharacterRepository.update(attribute.id, {
+    return await this.userCharacterRepository.update(attribute.id, {
       point: find.point - attribute.point,
       spentPoint: spentPoint + attribute.point,
       [attributeToUpdate]: find[attributeToUpdate] + attribute.point,
     });
-    GlobalSuccess.send(
-      attribute.reply,
-      'Pontos de atributo adicionado com sucesso'
-    );
   }
 
   private calculateMaxExperience(level: number): number {

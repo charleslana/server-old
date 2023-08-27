@@ -1,4 +1,4 @@
-import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyInstance, FastifyRequest } from 'fastify';
 import { GroupService } from '../service/GroupService';
 import { IGroup } from '../interface/IGroup';
 import { UserCharacterGroup } from '@prisma/client';
@@ -90,11 +90,8 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
         validateSessionMiddleware(),
       ],
     },
-    async (
-      request: FastifyRequest<{ Params: { id: number } }>,
-      reply: FastifyReply
-    ) => {
-      await groupService.delete(request.params.id, reply);
+    async (request: FastifyRequest<{ Params: { id: number } }>) => {
+      await groupService.delete(request.params.id);
     }
   );
 

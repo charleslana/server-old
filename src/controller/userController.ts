@@ -1,4 +1,4 @@
-import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyInstance, FastifyRequest } from 'fastify';
 import { IPassword } from '../interface/IPassword';
 import { RoleEnum, User } from '@prisma/client';
 import { UserService } from '../service/UserService';
@@ -85,11 +85,8 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
         validateRoleMiddleware([RoleEnum.Admin]),
       ],
     },
-    async (
-      request: FastifyRequest<{ Params: { id: number } }>,
-      reply: FastifyReply
-    ) => {
-      await userService.delete(request.params.id, reply);
+    async (request: FastifyRequest<{ Params: { id: number } }>) => {
+      await userService.delete(request.params.id);
     }
   );
 
@@ -134,12 +131,8 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
         validateAuthMiddleware(),
       ],
     },
-    async (
-      request: FastifyRequest<{ Body: IPassword }>,
-      reply: FastifyReply
-    ) => {
+    async (request: FastifyRequest<{ Body: IPassword }>) => {
       request.body.userId = request.user.id;
-      request.body.reply = reply;
       await userService.updatePassword(request.body);
     }
   );

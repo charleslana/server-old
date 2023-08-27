@@ -1,6 +1,4 @@
-import { FastifyReply } from 'fastify';
 import { GlobalError } from '../handler/GlobalError';
-import { GlobalSuccess } from '../handler/GlobalSuccess';
 import { ItemService } from './ItemService';
 import { UserCharacterItem } from '@prisma/client';
 import { UserCharacterItemRepository } from '../repository/UserCharacterItemRepository';
@@ -41,13 +39,8 @@ export class UserCharacterItemService {
     return findAll;
   }
 
-  async delete(
-    id: number,
-    userCharacterId: number,
-    reply: FastifyReply
-  ): Promise<void> {
+  async delete(id: number, userCharacterId: number): Promise<void> {
     await this.getByIdAndUserCharacterId(id, userCharacterId);
     await this.userCharacterItemRepository.delete(id);
-    GlobalSuccess.send(reply, 'Item do personagem excluído com sucesso');
   }
 }

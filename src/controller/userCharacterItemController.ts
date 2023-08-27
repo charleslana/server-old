@@ -1,4 +1,4 @@
-import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyInstance, FastifyRequest } from 'fastify';
 import { RoleEnum, UserCharacterItem } from '@prisma/client';
 import { UserCharacterItemService } from '../service/UserCharacterItemService';
 import { UserCharacterService } from '../service/UserCharacterService';
@@ -73,14 +73,10 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
         validateSessionMiddleware(),
       ],
     },
-    async (
-      request: FastifyRequest<{ Params: { id: number } }>,
-      reply: FastifyReply
-    ) => {
+    async (request: FastifyRequest<{ Params: { id: number } }>) => {
       await userCharacterItemService.delete(
         request.params.id,
-        request.session.userCharacterId!,
-        reply
+        request.session.userCharacterId!
       );
     }
   );

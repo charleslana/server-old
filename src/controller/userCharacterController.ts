@@ -1,4 +1,4 @@
-import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyInstance, FastifyRequest } from 'fastify';
 import { IAttribute } from '../interface/IAttribute';
 import { UserCharacter } from '@prisma/client';
 import { UserCharacterService } from '../service/UserCharacterService';
@@ -66,15 +66,8 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
         validateAuthMiddleware(),
       ],
     },
-    async (
-      request: FastifyRequest<{ Params: { id: number } }>,
-      reply: FastifyReply
-    ) => {
-      await userCharacterService.delete(
-        request.params.id,
-        request.user.id,
-        reply
-      );
+    async (request: FastifyRequest<{ Params: { id: number } }>) => {
+      await userCharacterService.delete(request.params.id, request.user.id);
     }
   );
 
@@ -131,13 +124,9 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
         validateSessionMiddleware(),
       ],
     },
-    async (
-      request: FastifyRequest<{ Body: IAttribute }>,
-      reply: FastifyReply
-    ) => {
+    async (request: FastifyRequest<{ Body: IAttribute }>) => {
       request.body.userId = request.user.id;
       request.body.id = request.session.userCharacterId!;
-      request.body.reply = reply;
       await userCharacterService.updateAttribute(request.body);
     }
   );

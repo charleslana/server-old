@@ -1,9 +1,7 @@
 import bcrypt from 'bcrypt';
 import { AuthService } from './AuthService';
-import { FastifyReply } from 'fastify';
 import { formatDate, omitField, omitFields } from '../utils/utils';
 import { GlobalError } from '../handler/GlobalError';
-import { GlobalSuccess } from '../handler/GlobalSuccess';
 import { IPassword } from '../interface/IPassword';
 import { User } from '@prisma/client';
 import { UserRepository } from '../repository/UserRepository';
@@ -49,10 +47,9 @@ export class UserService {
     return null;
   }
 
-  async delete(id: number, reply: FastifyReply): Promise<void> {
+  async delete(id: number): Promise<void> {
     await this.getById(id);
     await this.userRepository.delete(id);
-    GlobalSuccess.send(reply, 'Usuário deletado com sucesso');
   }
 
   async authenticateAndGenerateToken(
@@ -87,7 +84,6 @@ export class UserService {
     await this.userRepository.update(password.userId, {
       password: this.encrypt(password.newPassword),
     });
-    GlobalSuccess.send(password.reply, 'Senha alterada com sucesso');
   }
 
   encrypt(password: string): string {

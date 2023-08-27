@@ -1,6 +1,4 @@
-import { IReply } from './IReply';
-
-export interface IPassword extends IReply {
+export interface IPassword {
   userId: number;
   currentPassword: string;
   newPassword: string;

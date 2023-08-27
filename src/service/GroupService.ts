@@ -1,14 +1,17 @@
-import { FastifyReply } from 'fastify';
 import { GlobalError } from '../handler/GlobalError';
-import { GlobalSuccess } from '../handler/GlobalSuccess';
 import { Group } from '@prisma/client';
 import { GroupRepository } from '../repository/GroupRepository';
 import { IGroup } from '../interface/IGroup';
+import { UserCharacterService } from './UserCharacterService';
 
 export class GroupService {
   private groupRepository = new GroupRepository();
+  private userCharacterService = new UserCharacterService();
 
   async create(group: IGroup): Promise<Group> {
+    await this.userCharacterService.getById(
+      group.UserCharacterGroup.userCharacterId
+    );
     await this.checkIfGroupNameExists(group.name);
     return await this.groupRepository.save(group);
   }
@@ -34,10 +37,9 @@ export class GroupService {
     });
   }
 
-  async delete(id: number, reply: FastifyReply): Promise<void> {
+  async delete(id: number): Promise<void> {
     await this.getById(id);
     await this.groupRepository.delete(id);
-    GlobalSuccess.send(reply, 'Grupo excluído com sucesso');
   }
 
   private async checkIfGroupNameExists(
