@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Item, PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -10,7 +10,7 @@ async function main() {
     {
       name: 'Item 2',
     },
-  ];
+  ] as Item[];
 
   for (const item of items) {
     await prisma.item.create({

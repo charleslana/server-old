@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Character, PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -10,7 +10,7 @@ async function main() {
     {
       name: 'Character 2',
     },
-  ];
+  ] as Character[];
 
   for (const character of characters) {
     await prisma.character.create({

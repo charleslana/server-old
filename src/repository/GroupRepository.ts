@@ -28,7 +28,16 @@ export class GroupRepository {
   async findAll(): Promise<Group[]> {
     return await prisma.group.findMany({
       include: {
-        UserCharacterGroup: true,
+        UserCharacterGroup: {
+          include: {
+            UserCharacter: {
+              select: {
+                name: true,
+                level: true,
+              },
+            },
+          },
+        },
       },
     });
   }
@@ -37,7 +46,16 @@ export class GroupRepository {
     return await prisma.group.findUnique({
       where: { id },
       include: {
-        UserCharacterGroup: true,
+        UserCharacterGroup: {
+          include: {
+            UserCharacter: {
+              select: {
+                name: true,
+                level: true,
+              },
+            },
+          },
+        },
       },
     });
   }

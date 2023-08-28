@@ -14,7 +14,7 @@ export function validateCreateUser() {
           'string.empty': 'O campo {{#label}} não pode estar vazio',
         }),
         name: Joi.string()
-          .pattern(/^[a-zA-ZÀ-ú ]*$/)
+          .pattern(/^[a-zA-ZÀ-ú0-9_ ]*$/)
           .trim()
           .min(3)
           .max(30)
@@ -61,7 +61,7 @@ export function validateUpdateUserName() {
     {
       [Segments.BODY]: {
         name: Joi.string()
-          .pattern(/^[a-zA-ZÀ-ú ]*$/)
+          .pattern(/^[a-zA-ZÀ-ú0-9_ ]*$/)
           .trim()
           .min(3)
           .max(30)
