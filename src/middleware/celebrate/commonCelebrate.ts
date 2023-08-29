@@ -15,3 +15,18 @@ export const validateId = () => {
     { abortEarly: false }
   );
 };
+
+export const validateString = () => {
+  return celebrate(
+    {
+      [Segments.PARAMS]: {
+        fileName: Joi.string().required().messages({
+          'string.base': 'O campo {{#label}} deve ser uma string válida',
+          'any.required': 'O parâmetro {{#label}} é obrigatório',
+          'string.empty': 'O campo {{#label}} não pode estar vazio',
+        }),
+      },
+    },
+    { abortEarly: false }
+  );
+};

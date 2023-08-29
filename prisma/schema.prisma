@@ -133,6 +133,7 @@ model Group {
   description        String?              @db.VarChar(255)
   level              Int                  @default(1)
   experience         Int                  @default(0)
+  image              String?
   requiredLevel      Int?
   createdAt          DateTime             @default(now()) @map("created_at")
   updatedAt          DateTime             @default(now()) @updatedAt @map("updated_at")

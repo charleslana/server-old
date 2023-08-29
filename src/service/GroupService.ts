@@ -1,10 +1,11 @@
 import { delay, inject, injectable } from 'tsyringe';
-import { formatNumber } from '../utils/utils';
+import { formatNumber, getGroupImage } from '../utils/utils';
 import { GlobalError } from '../handler/GlobalError';
 import { Group, RoleGroupEnum, UserCharacter } from '@prisma/client';
 import { GroupRepository } from '../repository/GroupRepository';
 import { IGroup } from '../interface/IGroup';
 import { IRequirementGroup } from '../interface/IRequirementGroup';
+import { IUserCharacter } from '../interface/IUserCharacter';
 import { UserCharacterGroupService } from './UserCharacterGroupService';
 import { UserCharacterService } from './UserCharacterService';
 
@@ -39,31 +40,54 @@ export class GroupService {
     if (!find) {
       throw new GlobalError('Grupo não encontrado');
     }
+    if (find.image) {
+      find.image = getGroupImage(find.image);
+    }
     return find;
   }
 
   async getAll(): Promise<Group[]> {
     const findAll = await this.repository.findAll();
+    for (const find of findAll) {
+      if (find.image) {
+        find.image = getGroupImage(find.image);
+      }
+    }
     return findAll;
   }
 
-  async updateName(group: IGroup): Promise<Group | null> {
-    await this.getById(group.id);
-    await this.checkIfGroupNameExists(group.name, group.id);
-    return await this.repository.update(group.id, {
-      name: group.name,
+  async updateName(
+    userCharacterId: number,
+    name: string
+  ): Promise<Group | null> {
+    const userCharacter = await this.validateCharacterHasGroup(userCharacterId);
+    this.validateRoleGroup([RoleGroupEnum.Leader], userCharacter.group!.role);
+    await this.checkIfGroupNameExists(name, userCharacter.group!.groupId);
+    return await this.repository.update(userCharacter.group!.groupId, {
+      name: name,
     });
   }
 
   async delete(userCharacterId: number): Promise<void> {
-    const userCharacter =
-      await this.userCharacterService.getById(userCharacterId);
-    if (!userCharacter.group) {
-      throw new GlobalError('Personagem não participa de grupo');
-    }
-    await this.getById(userCharacter.group.groupId);
-    this.validateRoleGroup([RoleGroupEnum.Leader], userCharacter.group.role);
-    await this.repository.delete(userCharacter.group.groupId);
+    const userCharacter = await this.validateCharacterHasGroup(userCharacterId);
+    this.validateRoleGroup([RoleGroupEnum.Leader], userCharacter.group!.role);
+    await this.repository.delete(userCharacter.group!.groupId);
+  }
+
+  async getByUserCharacterId(userCharacterId: number): Promise<Group> {
+    const userCharacter = await this.validateCharacterHasGroup(userCharacterId);
+    return await this.getById(userCharacter.group!.groupId);
+  }
+
+  async updateImage(
+    userCharacterId: number,
+    fileName: string
+  ): Promise<Group | null> {
+    const userCharacter = await this.validateCharacterHasGroup(userCharacterId);
+    this.validateRoleGroup([RoleGroupEnum.Leader], userCharacter.group!.role);
+    return await this.repository.update(userCharacter.group!.groupId, {
+      image: fileName,
+    });
   }
 
   getGroupRequirements(): IRequirementGroup {
@@ -71,6 +95,17 @@ export class GroupService {
     requirementGroup.level = 30;
     requirementGroup.gold = 50000;
     return requirementGroup;
+  }
+
+  private async validateCharacterHasGroup(
+    userCharacterId: number
+  ): Promise<IUserCharacter> {
+    const userCharacter =
+      await this.userCharacterService.getById(userCharacterId);
+    if (!userCharacter.group) {
+      throw new GlobalError('Personagem não participa de grupo');
+    }
+    return userCharacter;
   }
 
   private validateGroupRequirements(userCharacter: UserCharacter): void {

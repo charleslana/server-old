@@ -3,6 +3,7 @@ import { FastifyInstance, FastifyRequest } from 'fastify';
 import { GroupService } from '../service/GroupService';
 import { IGroup } from '../interface/IGroup';
 import { sanitizeHtmlMiddleware } from '../middleware/sanitizeHtmlMiddleware';
+import { UploadService } from '../service/UploadService';
 import { UserCharacterGroup } from '@prisma/client';
 import { validateAuthMiddleware } from '../middleware/authMiddleware';
 import { validateBodyMiddleware } from '../middleware/validateBodyMiddleware';
@@ -16,6 +17,7 @@ import {
 
 function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
   const groupService = container.resolve(GroupService);
+  const uploadService = new UploadService();
 
   fastify.post(
     '/',
@@ -71,19 +73,19 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
     {
       preHandler: [
         validateBodyMiddleware(),
-        validateCelebrateMiddleware<{ Body: IGroup }>(
+        validateCelebrateMiddleware<{ Body: { name: string } }>(
           validateUpdateGroupName()
         ),
         validateAuthMiddleware(),
         validateSessionMiddleware(),
       ],
     },
-    async (request: FastifyRequest<{ Body: IGroup }>) => {
+    async (request: FastifyRequest<{ Body: { name: string } }>) => {
       fastify.log.info('Atualizar nome do grupo');
-      const userCharacterGroup = {} as UserCharacterGroup;
-      userCharacterGroup.userCharacterId = request.session.userCharacterId!;
-      request.body.UserCharacterGroup = userCharacterGroup;
-      const update = await groupService.updateName(request.body);
+      const update = await groupService.updateName(
+        request.session.userCharacterId!,
+        request.body.name
+      );
       return update;
     }
   );
@@ -107,6 +109,32 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
     () => {
       fastify.log.info('Obter requerimentos do grupo');
       const get = groupService.getGroupRequirements();
+      return get;
+    }
+  );
+
+  fastify.get(
+    '/profile',
+    {
+      preHandler: [validateAuthMiddleware(), validateSessionMiddleware()],
+    },
+    async (request: FastifyRequest) => {
+      fastify.log.info('Obter perfil do grupo');
+      const get = await groupService.getByUserCharacterId(
+        request.session.userCharacterId!
+      );
+      return get;
+    }
+  );
+
+  fastify.put(
+    '/image',
+    {
+      preHandler: [validateAuthMiddleware(), validateSessionMiddleware()],
+    },
+    async (request: FastifyRequest) => {
+      fastify.log.info('Atualizar imagem do grupo');
+      const get = await uploadService.send(request);
       return get;
     }
   );

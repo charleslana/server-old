@@ -1,5 +1,6 @@
 import characterController from './controller/characterController';
 import groupController from './controller/groupController';
+import publicController from './controller/publicController';
 import socketController from './controller/socketController';
 import userCharacterController from './controller/userCharacterController';
 import userCharacterGroupController from './controller/userCharacterGroupController';
@@ -17,4 +18,5 @@ export default function registerRoutes(server: FastifyInstance) {
   server.register(userCharacterSkillController, { prefix: '/v1' });
   server.register(groupController, { prefix: '/v1' });
   server.register(userCharacterGroupController, { prefix: '/v1' });
+  server.register(publicController, { prefix: '/v1' });
 }

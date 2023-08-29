@@ -113,6 +113,7 @@ CREATE TABLE "tb_group" (
     "description" VARCHAR(255),
     "level" INTEGER NOT NULL DEFAULT 1,
     "experience" INTEGER NOT NULL DEFAULT 0,
+    "image" TEXT,
     "requiredLevel" INTEGER,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

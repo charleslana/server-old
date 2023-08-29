@@ -3,6 +3,7 @@ import cors from '@fastify/cors';
 import CronJobService from './service/CronjobService';
 import fastify, { FastifyInstance } from 'fastify';
 import fastifyCookie from '@fastify/cookie';
+import fastifyMultipart from '@fastify/multipart';
 import fastifySession from '@fastify/session';
 import registerRoutes from './route';
 import socketioServer from 'fastify-socket.io';
@@ -38,6 +39,8 @@ server.register(fastifySession, {
 });
 
 server.register(socketioServer);
+
+server.register(fastifyMultipart);
 
 registerRoutes(server);
 

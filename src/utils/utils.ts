@@ -38,3 +38,7 @@ export const formatDate = (date: Date): string => {
 export const formatNumber = (number: number): string => {
   return number.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
 };
+
+export const getGroupImage = (image: string): string => {
+  return `${process.env.HOST}/v1/public/group/image/${image}`;
+};
