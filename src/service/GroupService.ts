@@ -22,10 +22,10 @@ export class GroupService {
 
   async create(group: IGroup): Promise<Group> {
     const userCharacter = await this.userCharacterService.getById(
-      group.UserCharacterGroup.userCharacterId
+      group.userCharacterGroup.userCharacterId
     );
     await this.userCharacterGroupService.validateUserCharacterInGroup(
-      group.UserCharacterGroup.userCharacterId
+      group.userCharacterGroup.userCharacterId
     );
     this.validateGroupRequirements(userCharacter);
     await this.checkIfGroupNameExists(group.name);

@@ -8,9 +8,9 @@ export class GroupRepository {
     return await prisma.group.create({
       data: {
         ...group,
-        UserCharacterGroup: {
+        userCharacterGroups: {
           create: {
-            userCharacterId: group.UserCharacterGroup.userCharacterId,
+            userCharacterId: group.userCharacterGroup.userCharacterId,
             role: RoleGroupEnum.Leader,
           },
         },
@@ -28,9 +28,9 @@ export class GroupRepository {
   async findAll(): Promise<Group[]> {
     return await prisma.group.findMany({
       include: {
-        UserCharacterGroup: {
+        userCharacterGroups: {
           include: {
-            UserCharacter: {
+            userCharacter: {
               select: {
                 name: true,
                 level: true,
@@ -46,9 +46,19 @@ export class GroupRepository {
     return await prisma.group.findUnique({
       where: { id },
       include: {
-        UserCharacterGroup: {
+        userCharacterGroups: {
           include: {
-            UserCharacter: {
+            userCharacter: {
+              select: {
+                name: true,
+                level: true,
+              },
+            },
+          },
+        },
+        invitations: {
+          include: {
+            userCharacter: {
               select: {
                 name: true,
                 level: true,

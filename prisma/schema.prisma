@@ -45,47 +45,48 @@ model Role {
 }
 
 model Character {
-  id            Int             @id @default(autoincrement())
-  name          String          @unique @db.VarChar(255)
-  description   String?
-  createdAt     DateTime        @default(now()) @map("created_at")
-  updatedAt     DateTime        @default(now()) @updatedAt @map("updated_at")
-  UserCharacter UserCharacter[]
+  id             Int             @id @default(autoincrement())
+  name           String          @unique @db.VarChar(255)
+  description    String?
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @default(now()) @updatedAt @map("updated_at")
+  userCharacters UserCharacter[]
 
   @@map(name: "tb_character")
 }
 
 model UserCharacter {
-  id           Int                  @id @default(autoincrement())
-  name         String               @unique @db.VarChar(20)
-  level        Int                  @default(1)
-  strength     Int                  @default(1)
-  intelligence Int                  @default(1)
-  dexterity    Int                  @default(1)
-  point        Int                  @default(10)
-  spentPoint   Int?
-  gold         Int                  @default(100)
-  experience   Int                  @default(0)
-  User         User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId       Int                  @map("user_id")
-  character    Character            @relation(fields: [characterId], references: [id], onDelete: Cascade)
-  characterId  Int                  @map("character_id")
-  createdAt    DateTime             @default(now()) @map("created_at")
-  updatedAt    DateTime             @default(now()) @updatedAt @map("updated_at")
-  items        UserCharacterItem[]
-  skills       UserCharacterSkill[]
-  group        UserCharacterGroup?
+  id               Int                  @id @default(autoincrement())
+  name             String               @unique @db.VarChar(20)
+  level            Int                  @default(1)
+  strength         Int                  @default(1)
+  intelligence     Int                  @default(1)
+  dexterity        Int                  @default(1)
+  point            Int                  @default(10)
+  spentPoint       Int?
+  gold             Int                  @default(100)
+  experience       Int                  @default(0)
+  user             User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId           Int                  @map("user_id")
+  character        Character            @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  characterId      Int                  @map("character_id")
+  createdAt        DateTime             @default(now()) @map("created_at")
+  updatedAt        DateTime             @default(now()) @updatedAt @map("updated_at")
+  items            UserCharacterItem[]
+  skills           UserCharacterSkill[]
+  group            UserCharacterGroup?
+  groupInvitations GroupInvitation[]
 
   @@map(name: "tb_user_character")
 }
 
 model Item {
-  id                Int                 @id @default(autoincrement())
-  name              String              @db.VarChar(255)
-  description       String?
-  createdAt         DateTime            @default(now()) @map("created_at")
-  updatedAt         DateTime            @default(now()) @updatedAt @map("updated_at")
-  UserCharacterItem UserCharacterItem[]
+  id                 Int                 @id @default(autoincrement())
+  name               String              @db.VarChar(255)
+  description        String?
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @default(now()) @updatedAt @map("updated_at")
+  userCharacterItems UserCharacterItem[]
 
   @@map(name: "tb_item")
 }
@@ -93,7 +94,7 @@ model Item {
 model UserCharacterItem {
   id              Int           @id @default(autoincrement())
   equipped        Boolean?
-  UserCharacter   UserCharacter @relation(fields: [userCharacterId], references: [id], onDelete: Cascade)
+  userCharacter   UserCharacter @relation(fields: [userCharacterId], references: [id], onDelete: Cascade)
   userCharacterId Int           @map("user_character_id")
   item            Item          @relation(fields: [itemId], references: [id], onDelete: Cascade)
   itemId          Int           @map("item_id")
@@ -104,12 +105,12 @@ model UserCharacterItem {
 }
 
 model Skill {
-  id                 Int                  @id @default(autoincrement())
-  name               String               @db.VarChar(255)
-  description        String?
-  createdAt          DateTime             @default(now()) @map("created_at")
-  updatedAt          DateTime             @default(now()) @updatedAt @map("updated_at")
-  UserCharacterSkill UserCharacterSkill[]
+  id                  Int                  @id @default(autoincrement())
+  name                String               @db.VarChar(255)
+  description         String?
+  createdAt           DateTime             @default(now()) @map("created_at")
+  updatedAt           DateTime             @default(now()) @updatedAt @map("updated_at")
+  userCharacterSkills UserCharacterSkill[]
 
   @@map(name: "tb_skill")
 }
@@ -117,7 +118,7 @@ model Skill {
 model UserCharacterSkill {
   id              Int           @id @default(autoincrement())
   level           Int           @default(1)
-  UserCharacter   UserCharacter @relation(fields: [userCharacterId], references: [id], onDelete: Cascade)
+  userCharacter   UserCharacter @relation(fields: [userCharacterId], references: [id], onDelete: Cascade)
   userCharacterId Int           @map("user_character_id")
   skill           Skill         @relation(fields: [skillId], references: [id], onDelete: Cascade)
   skillId         Int           @map("skill_id")
@@ -128,16 +129,17 @@ model UserCharacterSkill {
 }
 
 model Group {
-  id                 Int                  @id @default(autoincrement())
-  name               String               @db.VarChar(20)
-  description        String?              @db.VarChar(255)
-  level              Int                  @default(1)
-  experience         Int                  @default(0)
-  image              String?
-  requiredLevel      Int?
-  createdAt          DateTime             @default(now()) @map("created_at")
-  updatedAt          DateTime             @default(now()) @updatedAt @map("updated_at")
-  UserCharacterGroup UserCharacterGroup[]
+  id                  Int                  @id @default(autoincrement())
+  name                String               @db.VarChar(20)
+  description         String?              @db.VarChar(255)
+  level               Int                  @default(1)
+  experience          Int                  @default(0)
+  image               String?
+  requiredLevel       Int?
+  createdAt           DateTime             @default(now()) @map("created_at")
+  updatedAt           DateTime             @default(now()) @updatedAt @map("updated_at")
+  userCharacterGroups UserCharacterGroup[]
+  invitations         GroupInvitation[]
 
   @@map(name: "tb_group")
 }
@@ -146,7 +148,7 @@ model UserCharacterGroup {
   id              Int           @id @default(autoincrement())
   point           Int?
   role            RoleGroupEnum @default(Member)
-  UserCharacter   UserCharacter @relation(fields: [userCharacterId], references: [id], onDelete: Cascade)
+  userCharacter   UserCharacter @relation(fields: [userCharacterId], references: [id], onDelete: Cascade)
   userCharacterId Int           @unique @map("user_character_id")
   group           Group         @relation(fields: [groupId], references: [id], onDelete: Cascade)
   groupId         Int           @map("group_id")
@@ -154,4 +156,16 @@ model UserCharacterGroup {
   updatedAt       DateTime      @default(now()) @updatedAt @map("updated_at")
 
   @@map(name: "tb_user_character_group")
+}
+
+model GroupInvitation {
+  id              Int           @id @default(autoincrement())
+  userCharacter   UserCharacter @relation(fields: [userCharacterId], references: [id], onDelete: Cascade)
+  userCharacterId Int           @map("user_character_id")
+  group           Group         @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId         Int           @map("group_id")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @default(now()) @updatedAt @map("updated_at")
+
+  @@map(name: "tb_group_invitation")
 }

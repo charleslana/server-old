@@ -34,7 +34,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       fastify.log.info('Criar grupo');
       const userCharacterGroup = {} as UserCharacterGroup;
       userCharacterGroup.userCharacterId = request.session.userCharacterId!;
-      request.body.UserCharacterGroup = userCharacterGroup;
+      request.body.userCharacterGroup = userCharacterGroup;
       const create = await groupService.create(request.body);
       return create;
     }
