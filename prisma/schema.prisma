@@ -167,5 +167,6 @@ model GroupInvitation {
   createdAt       DateTime      @default(now()) @map("created_at")
   updatedAt       DateTime      @default(now()) @updatedAt @map("updated_at")
 
+  @@unique([userCharacterId, groupId], name: "unique_user_character_group_invitation")
   @@map(name: "tb_group_invitation")
 }
