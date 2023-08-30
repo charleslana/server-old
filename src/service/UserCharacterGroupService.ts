@@ -20,7 +20,7 @@ export class UserCharacterGroupService {
     return await this.repository.save(userCharacterGroup);
   }
 
-  async getByIdAndUserCharacterId(
+  async getByUserCharacterId(
     userCharacterId: number
   ): Promise<UserCharacterGroup> {
     const find = await this.repository.findByUserCharacterId(userCharacterId);
@@ -31,7 +31,7 @@ export class UserCharacterGroupService {
   }
 
   async deleteByUserCharacterId(userCharacterId: number): Promise<void> {
-    await this.getByIdAndUserCharacterId(userCharacterId);
+    await this.getByUserCharacterId(userCharacterId);
     await this.repository.deleteByUserCharacterId(userCharacterId);
   }
 

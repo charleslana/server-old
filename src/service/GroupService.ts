@@ -97,7 +97,7 @@ export class GroupService {
     return requirementGroup;
   }
 
-  private async validateCharacterHasGroup(
+  async validateCharacterHasGroup(
     userCharacterId: number
   ): Promise<IUserCharacter> {
     const userCharacter =
@@ -106,6 +106,12 @@ export class GroupService {
       throw new GlobalError('Personagem não participa de grupo');
     }
     return userCharacter;
+  }
+
+  validateRoleGroup(allowedRoles: RoleGroupEnum[], role: RoleGroupEnum): void {
+    if (!allowedRoles.includes(role)) {
+      throw new GlobalError('Personagem não autorizado', 403);
+    }
   }
 
   private validateGroupRequirements(userCharacter: UserCharacter): void {
@@ -131,15 +137,6 @@ export class GroupService {
     const exist = await this.repository.existsByName(name, groupId);
     if (exist) {
       throw new GlobalError('Nome de grupo já cadastrado');
-    }
-  }
-
-  private validateRoleGroup(
-    allowedRoles: RoleGroupEnum[],
-    role: RoleGroupEnum
-  ): void {
-    if (!allowedRoles.includes(role)) {
-      throw new GlobalError('Personagem não autorizado', 403);
     }
   }
 }

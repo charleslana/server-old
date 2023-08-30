@@ -18,7 +18,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       fastify.log.info(
         `Obter personagem do grupo pelo id ${request.session.userCharacterId}`
       );
-      const get = await userCharacterGroupService.getByIdAndUserCharacterId(
+      const get = await userCharacterGroupService.getByUserCharacterId(
         request.session.userCharacterId!
       );
       return get;

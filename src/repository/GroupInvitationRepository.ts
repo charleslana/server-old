@@ -10,17 +10,31 @@ export class GroupInvitationRepository {
   }
 
   async findByIdAndUserCharacterId(
-    groupId: number,
+    id: number,
     userCharacterId: number
   ): Promise<GroupInvitation | null> {
-    return await prisma.groupInvitation.findFirst({
-      where: { groupId, userCharacterId },
+    return await prisma.groupInvitation.findUnique({
+      where: { id, userCharacterId },
+    });
+  }
+
+  async find(id: number): Promise<GroupInvitation | null> {
+    return await prisma.groupInvitation.findUnique({
+      where: { id },
     });
   }
 
   async findAll(groupId: number): Promise<GroupInvitation[]> {
     return await prisma.groupInvitation.findMany({
       where: { groupId },
+      include: {
+        userCharacter: {
+          select: {
+            name: true,
+            level: true,
+          },
+        },
+      },
     });
   }
 
