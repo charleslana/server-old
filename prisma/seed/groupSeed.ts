@@ -10,7 +10,7 @@ async function main() {
   await prisma.group.create({
     data: {
       ...group,
-      UserCharacterGroup: {
+      userCharacterGroups: {
         create: {
           userCharacterId: 1,
           role: RoleGroupEnum.Leader,
