@@ -76,6 +76,7 @@ model UserCharacter {
   skills           UserCharacterSkill[]
   group            UserCharacterGroup?
   groupInvitations GroupInvitation[]
+  messages         Message[]
 
   @@map(name: "tb_user_character")
 }
@@ -169,4 +170,17 @@ model GroupInvitation {
 
   @@unique([userCharacterId, groupId], name: "unique_user_character_group_invitation")
   @@map(name: "tb_group_invitation")
+}
+
+model Message {
+  id                Int           @id @default(autoincrement())
+  title             String        @db.VarChar(255)
+  description       String        @db.VarChar(1000)
+  userCharacter     UserCharacter @relation(fields: [userCharacterId], references: [id], onDelete: Cascade)
+  userCharacterId   Int           @map("user_character_id")
+  targetCharacterId Int           @map("target_character_id")
+  createdAt         DateTime      @default(now()) @map("created_at")
+  updatedAt         DateTime      @default(now()) @updatedAt @map("updated_at")
+
+  @@map(name: "tb_message")
 }
