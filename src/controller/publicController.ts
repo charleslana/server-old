@@ -1,5 +1,6 @@
 import fs from 'fs';
 import mimeTypes from 'mime-types';
+import { ConfigService } from '../service/ConfigService';
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { UploadService } from '../service/UploadService';
 import { validateCelebrateMiddleware } from '../middleware/validateCelebrateMiddleware';
@@ -7,6 +8,7 @@ import { validateString } from '../middleware/celebrate/commonCelebrate';
 
 function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
   const uploadService = new UploadService();
+  const configService = new ConfigService();
 
   fastify.get(
     '/group/image/:fileName',
@@ -31,6 +33,12 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       return reply.send(readStream);
     }
   );
+
+  fastify.get('/version', async () => {
+    fastify.log.info('Obter versão do servidor');
+    const get = configService.getVersion();
+    return get;
+  });
 
   done();
 }
