@@ -134,6 +134,41 @@ CREATE TABLE "tb_user_character_group" (
     CONSTRAINT "tb_user_character_group_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "tb_group_invitation" (
+    "id" SERIAL NOT NULL,
+    "user_character_id" INTEGER NOT NULL,
+    "group_id" INTEGER NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "tb_group_invitation_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "tb_message" (
+    "id" SERIAL NOT NULL,
+    "title" VARCHAR(255) NOT NULL,
+    "description" VARCHAR(1000) NOT NULL,
+    "sender_character_id" INTEGER,
+    "receiver_character_id" INTEGER NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "tb_message_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "tb_message_item" (
+    "id" SERIAL NOT NULL,
+    "message_id" INTEGER NOT NULL,
+    "item_id" INTEGER NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "tb_message_item_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "tb_user_email_key" ON "tb_user"("email");
 
@@ -145,6 +180,9 @@ CREATE UNIQUE INDEX "tb_user_character_name_key" ON "tb_user_character"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "tb_user_character_group_user_character_id_key" ON "tb_user_character_group"("user_character_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "tb_group_invitation_user_character_id_group_id_key" ON "tb_group_invitation"("user_character_id", "group_id");
 
 -- AddForeignKey
 ALTER TABLE "tb_user_role" ADD CONSTRAINT "tb_user_role_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "tb_user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -172,3 +210,21 @@ ALTER TABLE "tb_user_character_group" ADD CONSTRAINT "tb_user_character_group_us
 
 -- AddForeignKey
 ALTER TABLE "tb_user_character_group" ADD CONSTRAINT "tb_user_character_group_group_id_fkey" FOREIGN KEY ("group_id") REFERENCES "tb_group"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "tb_group_invitation" ADD CONSTRAINT "tb_group_invitation_user_character_id_fkey" FOREIGN KEY ("user_character_id") REFERENCES "tb_user_character"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "tb_group_invitation" ADD CONSTRAINT "tb_group_invitation_group_id_fkey" FOREIGN KEY ("group_id") REFERENCES "tb_group"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "tb_message" ADD CONSTRAINT "tb_message_sender_character_id_fkey" FOREIGN KEY ("sender_character_id") REFERENCES "tb_user_character"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "tb_message" ADD CONSTRAINT "tb_message_receiver_character_id_fkey" FOREIGN KEY ("receiver_character_id") REFERENCES "tb_user_character"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "tb_message_item" ADD CONSTRAINT "tb_message_item_message_id_fkey" FOREIGN KEY ("message_id") REFERENCES "tb_message"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "tb_message_item" ADD CONSTRAINT "tb_message_item_item_id_fkey" FOREIGN KEY ("item_id") REFERENCES "tb_item"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

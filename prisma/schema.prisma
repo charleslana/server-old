@@ -76,7 +76,8 @@ model UserCharacter {
   skills           UserCharacterSkill[]
   group            UserCharacterGroup?
   groupInvitations GroupInvitation[]
-  messages         Message[]
+  senderMessages   Message[]            @relation(name: "sender")
+  receiverMessages Message[]            @relation(name: "receiver")
 
   @@map(name: "tb_user_character")
 }
@@ -88,6 +89,7 @@ model Item {
   createdAt          DateTime            @default(now()) @map("created_at")
   updatedAt          DateTime            @default(now()) @updatedAt @map("updated_at")
   userCharacterItems UserCharacterItem[]
+  messageItems       MessageItem[]
 
   @@map(name: "tb_item")
 }
@@ -173,14 +175,28 @@ model GroupInvitation {
 }
 
 model Message {
-  id                Int           @id @default(autoincrement())
-  title             String        @db.VarChar(255)
-  description       String        @db.VarChar(1000)
-  userCharacter     UserCharacter @relation(fields: [userCharacterId], references: [id], onDelete: Cascade)
-  userCharacterId   Int           @map("user_character_id")
-  targetCharacterId Int           @map("target_character_id")
-  createdAt         DateTime      @default(now()) @map("created_at")
-  updatedAt         DateTime      @default(now()) @updatedAt @map("updated_at")
+  id                  Int            @id @default(autoincrement())
+  title               String         @db.VarChar(255)
+  description         String         @db.VarChar(1000)
+  sender              UserCharacter? @relation(name: "sender", fields: [senderCharacterId], references: [id], onDelete: Cascade)
+  senderCharacterId   Int?           @map("sender_character_id")
+  receiver            UserCharacter  @relation(name: "receiver", fields: [receiverCharacterId], references: [id], onDelete: Cascade)
+  receiverCharacterId Int            @map("receiver_character_id")
+  createdAt           DateTime       @default(now()) @map("created_at")
+  updatedAt           DateTime       @default(now()) @updatedAt @map("updated_at")
+  items               MessageItem[]
 
   @@map(name: "tb_message")
+}
+
+model MessageItem {
+  id        Int      @id @default(autoincrement())
+  message   Message  @relation(fields: [messageId], references: [id])
+  messageId Int      @map("message_id")
+  item      Item     @relation(fields: [itemId], references: [id])
+  itemId    Int      @map("item_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map(name: "tb_message_item")
 }
