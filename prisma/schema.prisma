@@ -61,7 +61,7 @@ model Character {
   id             Int                @id @default(autoincrement())
   name           String             @unique @db.VarChar(255)
   description    String?
-  class          CharacterClassEnum
+  characterClass CharacterClassEnum @map("character_class")
   createdAt      DateTime           @default(now()) @map("created_at")
   updatedAt      DateTime           @default(now()) @updatedAt @map("updated_at")
   userCharacters UserCharacter[]

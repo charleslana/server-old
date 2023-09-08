@@ -38,7 +38,7 @@ CREATE TABLE "tb_character" (
     "id" SERIAL NOT NULL,
     "name" VARCHAR(255) NOT NULL,
     "description" TEXT,
-    "class" "CharacterClassEnum" NOT NULL,
+    "character_class" "CharacterClassEnum" NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
