@@ -2,7 +2,7 @@ import sanitizeHtml from 'sanitize-html';
 import { FastifyReply, FastifyRequest, RouteGenericInterface } from 'fastify';
 
 export function sanitizeHtmlMiddleware<T extends RouteGenericInterface>() {
-  return async (
+  return (
     request: FastifyRequest<T>,
     _reply: FastifyReply,
     doneHook: () => void

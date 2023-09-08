@@ -25,6 +25,7 @@ model User {
   name       String          @db.VarChar(30)
   diamond    Int             @default(0)
   bannedTime DateTime?       @map("banned_time")
+  authToken  String?         @map("auth_token")
   createdAt  DateTime        @default(now()) @map("created_at")
   updatedAt  DateTime        @default(now()) @updatedAt @map("updated_at")
   roles      Role[]

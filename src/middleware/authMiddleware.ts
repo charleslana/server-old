@@ -1,11 +1,12 @@
 import { AuthService } from '../service/AuthService';
 import { FastifyReply, FastifyRequest, RouteGenericInterface } from 'fastify';
 import { GlobalError } from '../handler/GlobalError';
+import { UserService } from '../service/UserService';
 
 export function validateAuthMiddleware<T extends RouteGenericInterface>() {
   return (
     request: FastifyRequest<T>,
-    _reply: FastifyReply,
+    reply: FastifyReply,
     doneHook: () => void
   ) => {
     const token = request.headers.authorization;
@@ -14,7 +15,18 @@ export function validateAuthMiddleware<T extends RouteGenericInterface>() {
     }
     const authService = new AuthService();
     const decodedToken = authService.verifyJwtToken(token!);
-    request.user = decodedToken.user;
-    doneHook();
+    const userService = new UserService();
+    userService
+      .getAuth(decodedToken.user.id, decodedToken.user.authToken ?? '')
+      .then(userLogged => {
+        if (!userLogged) {
+          reply
+            .code(403)
+            .send(new GlobalError('Usuário autenticado em outra sessão', 403));
+          return;
+        }
+        request.user = decodedToken.user;
+        doneHook();
+      });
   };
 }

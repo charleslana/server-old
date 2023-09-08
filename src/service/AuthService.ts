@@ -14,6 +14,7 @@ export class AuthService {
     const payload: IAuth = {
       user: {
         id: user.id,
+        authToken: user.authToken ?? '',
         roles: user.roles,
       },
     };
