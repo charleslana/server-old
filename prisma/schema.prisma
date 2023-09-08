@@ -18,6 +18,18 @@ enum RoleGroupEnum {
   Member
 }
 
+enum CharacterClassEnum {
+  Warrior
+  Blader
+  Wizard
+  ForceArcher
+  ForceShielder
+  ForceBlader
+  Gladiator
+  ForceGunner
+  DarkMage
+}
+
 model User {
   id         Int             @id @default(autoincrement())
   email      String          @unique @db.VarChar(255)
@@ -46,11 +58,12 @@ model Role {
 }
 
 model Character {
-  id             Int             @id @default(autoincrement())
-  name           String          @unique @db.VarChar(255)
+  id             Int                @id @default(autoincrement())
+  name           String             @unique @db.VarChar(255)
   description    String?
-  createdAt      DateTime        @default(now()) @map("created_at")
-  updatedAt      DateTime        @default(now()) @updatedAt @map("updated_at")
+  class          CharacterClassEnum
+  createdAt      DateTime           @default(now()) @map("created_at")
+  updatedAt      DateTime           @default(now()) @updatedAt @map("updated_at")
   userCharacters UserCharacter[]
 
   @@map(name: "tb_character")

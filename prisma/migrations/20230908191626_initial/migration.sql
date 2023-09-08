@@ -4,6 +4,9 @@ CREATE TYPE "RoleEnum" AS ENUM ('Admin', 'User');
 -- CreateEnum
 CREATE TYPE "RoleGroupEnum" AS ENUM ('Leader', 'Master', 'Member');
 
+-- CreateEnum
+CREATE TYPE "CharacterClassEnum" AS ENUM ('Warrior', 'Blader', 'Wizard', 'ForceArcher', 'ForceShielder', 'ForceBlader', 'Gladiator', 'ForceGunner', 'DarkMage');
+
 -- CreateTable
 CREATE TABLE "tb_user" (
     "id" SERIAL NOT NULL,
@@ -12,6 +15,7 @@ CREATE TABLE "tb_user" (
     "name" VARCHAR(30) NOT NULL,
     "diamond" INTEGER NOT NULL DEFAULT 0,
     "banned_time" TIMESTAMP(3),
+    "auth_token" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -34,6 +38,7 @@ CREATE TABLE "tb_character" (
     "id" SERIAL NOT NULL,
     "name" VARCHAR(255) NOT NULL,
     "description" TEXT,
+    "class" "CharacterClassEnum" NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
