@@ -48,7 +48,12 @@ export class UserCharacterService {
   }
 
   async delete(id: number, userId: number): Promise<void> {
-    await this.getByIdAndUserId(id, userId);
+    const find = await this.getByIdAndUserId(id, userId);
+    if (find.level >= 100) {
+      throw new GlobalError(
+        'Não pode excluir personagem com nível 100 ou mais'
+      );
+    }
     await this.repository.delete(id);
   }
 
