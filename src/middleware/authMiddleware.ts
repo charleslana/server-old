@@ -11,7 +11,7 @@ export function validateAuthMiddleware<T extends RouteGenericInterface>() {
   ) => {
     const token = request.headers.authorization;
     if (!token) {
-      throw new GlobalError('Usuário não autenticado', 403);
+      throw new GlobalError('Usuário não autenticado', 401);
     }
     const authService = new AuthService();
     const decodedToken = authService.verifyJwtToken(token!);
@@ -21,8 +21,8 @@ export function validateAuthMiddleware<T extends RouteGenericInterface>() {
       .then(userLogged => {
         if (!userLogged) {
           reply
-            .code(403)
-            .send(new GlobalError('Usuário autenticado em outra sessão', 403));
+            .code(401)
+            .send(new GlobalError('Usuário autenticado em outra sessão', 401));
           return;
         }
         request.user = decodedToken.user;
