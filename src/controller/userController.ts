@@ -37,7 +37,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
     {
       preHandler: [
         validateAuthMiddleware(),
-        validateRoleMiddleware([RoleEnum.Admin]),
+        validateRoleMiddleware([RoleEnum.admin]),
       ],
     },
     async () => {
@@ -53,7 +53,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       preHandler: [
         validateCelebrateMiddleware<{ Params: { id: number } }>(validateId()),
         validateAuthMiddleware(),
-        validateRoleMiddleware([RoleEnum.Admin]),
+        validateRoleMiddleware([RoleEnum.admin]),
       ],
     },
     async (request: FastifyRequest<{ Params: { id: number } }>) => {
@@ -86,7 +86,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       preHandler: [
         validateCelebrateMiddleware<{ Params: { id: number } }>(validateId()),
         validateAuthMiddleware(),
-        validateRoleMiddleware([RoleEnum.Admin]),
+        validateRoleMiddleware([RoleEnum.admin]),
       ],
     },
     async (request: FastifyRequest<{ Params: { id: number } }>) => {

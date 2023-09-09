@@ -23,7 +23,7 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
           validateCreateUserCharacterItem()
         ),
         validateAuthMiddleware(),
-        validateRoleMiddleware([RoleEnum.Admin]),
+        validateRoleMiddleware([RoleEnum.admin]),
       ],
     },
     async (request: FastifyRequest<{ Body: UserCharacterItem }>) => {

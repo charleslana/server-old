@@ -1,4 +1,4 @@
-import { Group, PrismaClient, RoleGroupEnum } from '@prisma/client';
+import { Group, PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -13,7 +13,7 @@ async function main() {
       userCharacterGroups: {
         create: {
           userCharacterId: 1,
-          role: RoleGroupEnum.Leader,
+          role: 'leader',
         },
       },
     },

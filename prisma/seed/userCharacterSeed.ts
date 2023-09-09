@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 async function main() {
   const userCharacter = {
     name: 'User character 1',
-    gender: 'Male',
+    gender: 'male',
     userId: 1,
     characterId: 1,
   } as UserCharacter;

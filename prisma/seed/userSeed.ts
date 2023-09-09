@@ -34,7 +34,7 @@ async function main() {
         ...user,
         roles: {
           create: {
-            name: i === 0 ? 'Admin' : 'User',
+            name: i === 0 ? 'admin' : 'user',
           },
         },
       },

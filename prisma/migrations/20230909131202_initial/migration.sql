@@ -1,14 +1,14 @@
 -- CreateEnum
-CREATE TYPE "RoleEnum" AS ENUM ('Admin', 'User');
+CREATE TYPE "RoleEnum" AS ENUM ('admin', 'user');
 
 -- CreateEnum
-CREATE TYPE "RoleGroupEnum" AS ENUM ('Leader', 'Master', 'Member');
+CREATE TYPE "RoleGroupEnum" AS ENUM ('leader', 'master', 'member');
 
 -- CreateEnum
-CREATE TYPE "CharacterClassEnum" AS ENUM ('Warrior', 'Blader', 'Wizard', 'ForceArcher', 'ForceShielder', 'ForceBlader', 'Gladiator', 'ForceGunner', 'DarkMage');
+CREATE TYPE "CharacterClassEnum" AS ENUM ('warrior', 'blader', 'wizard', 'forcearcher', 'forceshielder', 'forceblader', 'gladiator', 'forcegunner', 'darkmage');
 
 -- CreateEnum
-CREATE TYPE "GenderEnum" AS ENUM ('Male', 'Female');
+CREATE TYPE "GenderEnum" AS ENUM ('male', 'female');
 
 -- CreateTable
 CREATE TABLE "tb_user" (
@@ -28,7 +28,7 @@ CREATE TABLE "tb_user" (
 -- CreateTable
 CREATE TABLE "tb_user_role" (
     "id" SERIAL NOT NULL,
-    "name" "RoleEnum" NOT NULL DEFAULT 'User',
+    "name" "RoleEnum" NOT NULL DEFAULT 'user',
     "user_id" INTEGER NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -134,7 +134,7 @@ CREATE TABLE "tb_group" (
 CREATE TABLE "tb_user_character_group" (
     "id" SERIAL NOT NULL,
     "point" INTEGER,
-    "role" "RoleGroupEnum" NOT NULL DEFAULT 'Member',
+    "role" "RoleGroupEnum" NOT NULL DEFAULT 'member',
     "user_character_id" INTEGER NOT NULL,
     "group_id" INTEGER NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

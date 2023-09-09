@@ -10,7 +10,7 @@ export class UserRepository {
         ...user,
         roles: {
           create: {
-            name: 'User',
+            name: 'user',
           },
         },
       },

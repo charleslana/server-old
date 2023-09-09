@@ -69,7 +69,7 @@ export class GroupInvitationService {
     const userCharacter =
       await this.groupService.validateCharacterHasGroup(userCharacterId);
     this.groupService.validateRoleGroup(
-      [RoleGroupEnum.Leader, RoleGroupEnum.Master],
+      [RoleGroupEnum.leader, RoleGroupEnum.master],
       userCharacter.group!.role
     );
     await this.userCharacterGroupService.validateUserCharacterInGroup(

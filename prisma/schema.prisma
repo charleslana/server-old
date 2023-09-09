@@ -8,31 +8,31 @@ datasource db {
 }
 
 enum RoleEnum {
-  Admin
-  User
+  admin
+  user
 }
 
 enum RoleGroupEnum {
-  Leader
-  Master
-  Member
+  leader
+  master
+  member
 }
 
 enum CharacterClassEnum {
-  Warrior
-  Blader
-  Wizard
-  ForceArcher
-  ForceShielder
-  ForceBlader
-  Gladiator
-  ForceGunner
-  DarkMage
+  warrior
+  blader
+  wizard
+  forcearcher
+  forceshielder
+  forceblader
+  gladiator
+  forcegunner
+  darkmage
 }
 
 enum GenderEnum {
-  Male
-  Female
+  male
+  female
 }
 
 model User {
@@ -53,7 +53,7 @@ model User {
 
 model Role {
   id        Int      @id @default(autoincrement())
-  name      RoleEnum @default(User)
+  name      RoleEnum @default(user)
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int      @map("user_id")
   createdAt DateTime @default(now()) @map("created_at")
@@ -170,7 +170,7 @@ model Group {
 model UserCharacterGroup {
   id              Int           @id @default(autoincrement())
   point           Int?
-  role            RoleGroupEnum @default(Member)
+  role            RoleGroupEnum @default(member)
   userCharacter   UserCharacter @relation(fields: [userCharacterId], references: [id], onDelete: Cascade)
   userCharacterId Int           @unique @map("user_character_id")
   group           Group         @relation(fields: [groupId], references: [id], onDelete: Cascade)

@@ -61,7 +61,7 @@ export class GroupService {
     name: string
   ): Promise<Group | null> {
     const userCharacter = await this.validateCharacterHasGroup(userCharacterId);
-    this.validateRoleGroup([RoleGroupEnum.Leader], userCharacter.group!.role);
+    this.validateRoleGroup([RoleGroupEnum.leader], userCharacter.group!.role);
     await this.checkIfGroupNameExists(name, userCharacter.group!.groupId);
     return await this.repository.update(userCharacter.group!.groupId, {
       name: name,
@@ -70,7 +70,7 @@ export class GroupService {
 
   async delete(userCharacterId: number): Promise<void> {
     const userCharacter = await this.validateCharacterHasGroup(userCharacterId);
-    this.validateRoleGroup([RoleGroupEnum.Leader], userCharacter.group!.role);
+    this.validateRoleGroup([RoleGroupEnum.leader], userCharacter.group!.role);
     await this.repository.delete(userCharacter.group!.groupId);
   }
 
@@ -84,7 +84,7 @@ export class GroupService {
     fileName: string
   ): Promise<Group | null> {
     const userCharacter = await this.validateCharacterHasGroup(userCharacterId);
-    this.validateRoleGroup([RoleGroupEnum.Leader], userCharacter.group!.role);
+    this.validateRoleGroup([RoleGroupEnum.leader], userCharacter.group!.role);
     return await this.repository.update(userCharacter.group!.groupId, {
       image: fileName,
     });

@@ -1,4 +1,4 @@
-import { Group, PrismaClient, RoleGroupEnum } from '@prisma/client';
+import { Group, PrismaClient } from '@prisma/client';
 import { IGroup } from '../interface/IGroup';
 
 const prisma = new PrismaClient();
@@ -11,7 +11,7 @@ export class GroupRepository {
         userCharacterGroups: {
           create: {
             userCharacterId: group.userCharacterGroup.userCharacterId,
-            role: RoleGroupEnum.Leader,
+            role: 'leader',
           },
         },
       },
