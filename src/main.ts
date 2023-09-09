@@ -83,7 +83,8 @@ const start = async () => {
       .$connect()
       .then(() => server.log.info('Banco de dados conectado com sucesso'));
     const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
-    await server.listen({ port: port });
+    const address = process.env.ADDRESS ?? undefined;
+    await server.listen({ port: port, host: address });
     server.log.info(`Servidor conectado na porta ${port}`);
     const cron = new CronJobService(server);
     cron.start();
