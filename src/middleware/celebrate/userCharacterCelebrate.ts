@@ -1,6 +1,7 @@
 import { AttributeEnum } from '../../enum/AttributeEnum';
 import { celebrate, Joi, Segments } from 'celebrate';
 import { customValidateMessages } from '../../utils/utils';
+import { GenderEnum } from '@prisma/client';
 
 export function validateCreateUserCharacter() {
   return celebrate(
@@ -27,6 +28,15 @@ export function validateCreateUserCharacter() {
               'O campo {{#label}} não deve ter mais de {#limit} caracteres',
             'any.required': 'O campo {{#label}} é obrigatório',
             'string.empty': 'O campo {{#label}} não pode estar vazio',
+          }),
+        gender: Joi.string()
+          .valid(...Object.values(GenderEnum))
+          .required()
+          .messages({
+            'string.base': 'O campo {{#label}} deve ser uma string válida',
+            'any.only':
+              'O valor do campo {{#label}} deve ser um dos valores válidos: {{#valids}}',
+            'any.required': 'O campo {{#label}} é obrigatório',
           }),
       },
     },

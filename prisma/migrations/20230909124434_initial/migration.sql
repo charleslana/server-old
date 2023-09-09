@@ -7,6 +7,9 @@ CREATE TYPE "RoleGroupEnum" AS ENUM ('Leader', 'Master', 'Member');
 -- CreateEnum
 CREATE TYPE "CharacterClassEnum" AS ENUM ('Warrior', 'Blader', 'Wizard', 'ForceArcher', 'ForceShielder', 'ForceBlader', 'Gladiator', 'ForceGunner', 'DarkMage');
 
+-- CreateEnum
+CREATE TYPE "GenderEnum" AS ENUM ('Male', 'Female');
+
 -- CreateTable
 CREATE TABLE "tb_user" (
     "id" SERIAL NOT NULL,
@@ -57,6 +60,7 @@ CREATE TABLE "tb_user_character" (
     "spentPoint" INTEGER,
     "gold" INTEGER NOT NULL DEFAULT 100,
     "experience" INTEGER NOT NULL DEFAULT 0,
+    "gender" "GenderEnum" NOT NULL,
     "user_id" INTEGER NOT NULL,
     "character_id" INTEGER NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

@@ -12,8 +12,8 @@ export class UserCharacterService {
   async create(userCharacter: UserCharacter): Promise<UserCharacter> {
     await this.characterService.getById(userCharacter.characterId);
     const count = await this.repository.countByUserId(userCharacter.userId);
-    if (count >= 5) {
-      throw new GlobalError('Limite de personagem atingido, total: 5');
+    if (count >= 4) {
+      throw new GlobalError('Limite de personagem atingido, total: 4');
     }
     const exist = await this.repository.existsByName(
       userCharacter.name,

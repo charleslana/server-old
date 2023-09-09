@@ -9,6 +9,9 @@ export class UserCharacterRepository {
       data: {
         ...userCharacter,
       },
+      include: {
+        character: true,
+      },
     });
   }
 
