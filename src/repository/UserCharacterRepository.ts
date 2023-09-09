@@ -28,6 +28,9 @@ export class UserCharacterRepository {
   async findAllUserId(userId: number): Promise<IUserCharacter[]> {
     return (await prisma.userCharacter.findMany({
       where: { userId },
+      orderBy: {
+        id: 'asc',
+      },
       include: {
         character: true,
       },
