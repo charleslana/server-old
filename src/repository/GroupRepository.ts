@@ -76,7 +76,10 @@ export class GroupRepository {
   ): Promise<boolean> {
     const groupWithSameName = await prisma.group.findFirst({
       where: {
-        name,
+        name: {
+          equals: name,
+          mode: 'insensitive',
+        },
         NOT: {
           id: groupId || undefined,
         },

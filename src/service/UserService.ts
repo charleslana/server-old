@@ -21,6 +21,7 @@ export class UserService {
       throw new GlobalError('E-mail já cadastrado');
     }
     const hashedPassword = this.encrypt(user.password);
+    user.email = user.email.toLowerCase();
     const save = await this.repository.save({
       ...user,
       password: hashedPassword,

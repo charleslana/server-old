@@ -62,7 +62,10 @@ export class UserCharacterRepository {
   async existsByName(name: string, id: number | null = null): Promise<boolean> {
     const userCharacterWithSameName = await prisma.userCharacter.findFirst({
       where: {
-        name,
+        name: {
+          equals: name,
+          mode: 'insensitive',
+        },
         NOT: {
           id: id || undefined,
         },
