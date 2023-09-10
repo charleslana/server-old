@@ -42,9 +42,9 @@ export class UserRepository {
   }
 
   async findByEmail(email: string): Promise<IUser | null> {
-    const emailUpperCase = email.toUpperCase();
+    const emailLowerCase = email.toLowerCase();
     return await prisma.user.findUnique({
-      where: { email: emailUpperCase },
+      where: { email: emailLowerCase },
       include: {
         roles: true,
       },
