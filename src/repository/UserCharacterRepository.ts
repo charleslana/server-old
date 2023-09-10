@@ -33,6 +33,7 @@ export class UserCharacterRepository {
       },
       include: {
         character: true,
+        group: true,
       },
     })) as IUserCharacter[];
   }
@@ -55,6 +56,7 @@ export class UserCharacterRepository {
       where: { id, userId },
       include: {
         character: true,
+        group: true,
       },
     })) as IUserCharacter;
   }

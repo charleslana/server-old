@@ -2,7 +2,7 @@ import { CharacterService } from './CharacterService';
 import { GlobalError } from '../handler/GlobalError';
 import { IAttribute } from '../interface/IAttribute';
 import { IUserCharacter } from '../interface/IUserCharacter';
-import { UserCharacter } from '@prisma/client';
+import { RoleGroupEnum, UserCharacter } from '@prisma/client';
 import { UserCharacterRepository } from '../repository/UserCharacterRepository';
 
 export class UserCharacterService {
@@ -52,6 +52,11 @@ export class UserCharacterService {
     if (find.level >= 100) {
       throw new GlobalError(
         'Não pode excluir personagem com nível 100 ou mais'
+      );
+    }
+    if (find.group != null && find.group.role == RoleGroupEnum.leader) {
+      throw new GlobalError(
+        'Não pode excluir personagem estando em uma guilda como líder'
       );
     }
     await this.repository.delete(id);
