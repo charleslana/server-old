@@ -26,7 +26,7 @@ export class UserCharacterRepository {
   }
 
   async findAllByUserId(userId: number): Promise<IUserCharacter[]> {
-    const userCharacters = await prisma.userCharacter.findMany({
+    return (await prisma.userCharacter.findMany({
       where: { userId },
       orderBy: {
         id: 'asc',
@@ -39,13 +39,7 @@ export class UserCharacterRepository {
           },
         },
       },
-    });
-    return userCharacters.map(userCharacter => {
-      return {
-        ...userCharacter,
-        maxExperience: 0,
-      } as IUserCharacter;
-    });
+    })) as unknown as IUserCharacter[];
   }
 
   async findById(id: number): Promise<IUserCharacter | null> {
