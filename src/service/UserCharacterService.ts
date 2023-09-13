@@ -42,8 +42,13 @@ export class UserCharacterService {
     return find;
   }
 
-  async getAllByUserId(userId: number): Promise<UserCharacter[]> {
-    const findAll = await this.repository.findAllUserId(userId);
+  async getAllByUserId(userId: number): Promise<IUserCharacter[]> {
+    const findAll = await this.repository.findAllByUserId(userId);
+    findAll.forEach(userCharacter => {
+      userCharacter.maxExperience = this.calculateMaxExperience(
+        userCharacter.level
+      );
+    });
     return findAll;
   }
 
@@ -54,7 +59,10 @@ export class UserCharacterService {
         'Não pode excluir personagem com nível 100 ou mais'
       );
     }
-    if (find.group != null && find.group.role == RoleGroupEnum.leader) {
+    if (
+      find.groupMember != null &&
+      find.groupMember.role == RoleGroupEnum.leader
+    ) {
       throw new GlobalError(
         'Não pode excluir personagem estando em uma guilda como líder'
       );

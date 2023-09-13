@@ -94,7 +94,7 @@ model UserCharacter {
   updatedAt        DateTime             @default(now()) @updatedAt @map("updated_at")
   items            UserCharacterItem[]
   skills           UserCharacterSkill[]
-  group            UserCharacterGroup?
+  groupMember      UserCharacterGroup?
   groupInvitations GroupInvitation[]
   senderMessages   Message[]            @relation(name: "sender")
   receiverMessages Message[]            @relation(name: "receiver")

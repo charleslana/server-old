@@ -70,7 +70,7 @@ export class GroupInvitationService {
       await this.groupService.validateCharacterHasGroup(userCharacterId);
     this.groupService.validateRoleGroup(
       [RoleGroupEnum.leader, RoleGroupEnum.master],
-      userCharacter.group!.role
+      userCharacter.groupMember!.role
     );
     await this.userCharacterGroupService.validateUserCharacterInGroup(
       find.userCharacterId

@@ -61,22 +61,28 @@ export class GroupService {
     name: string
   ): Promise<Group | null> {
     const userCharacter = await this.validateCharacterHasGroup(userCharacterId);
-    this.validateRoleGroup([RoleGroupEnum.leader], userCharacter.group!.role);
-    await this.checkIfGroupNameExists(name, userCharacter.group!.groupId);
-    return await this.repository.update(userCharacter.group!.groupId, {
+    this.validateRoleGroup(
+      [RoleGroupEnum.leader],
+      userCharacter.groupMember!.role
+    );
+    await this.checkIfGroupNameExists(name, userCharacter.groupMember!.groupId);
+    return await this.repository.update(userCharacter.groupMember!.groupId, {
       name: name,
     });
   }
 
   async delete(userCharacterId: number): Promise<void> {
     const userCharacter = await this.validateCharacterHasGroup(userCharacterId);
-    this.validateRoleGroup([RoleGroupEnum.leader], userCharacter.group!.role);
-    await this.repository.delete(userCharacter.group!.groupId);
+    this.validateRoleGroup(
+      [RoleGroupEnum.leader],
+      userCharacter.groupMember!.role
+    );
+    await this.repository.delete(userCharacter.groupMember!.groupId);
   }
 
   async getByUserCharacterId(userCharacterId: number): Promise<Group> {
     const userCharacter = await this.validateCharacterHasGroup(userCharacterId);
-    return await this.getById(userCharacter.group!.groupId);
+    return await this.getById(userCharacter.groupMember!.groupId);
   }
 
   async updateImage(
@@ -84,8 +90,11 @@ export class GroupService {
     fileName: string
   ): Promise<Group | null> {
     const userCharacter = await this.validateCharacterHasGroup(userCharacterId);
-    this.validateRoleGroup([RoleGroupEnum.leader], userCharacter.group!.role);
-    return await this.repository.update(userCharacter.group!.groupId, {
+    this.validateRoleGroup(
+      [RoleGroupEnum.leader],
+      userCharacter.groupMember!.role
+    );
+    return await this.repository.update(userCharacter.groupMember!.groupId, {
       image: fileName,
     });
   }
@@ -102,7 +111,7 @@ export class GroupService {
   ): Promise<IUserCharacter> {
     const userCharacter =
       await this.userCharacterService.getById(userCharacterId);
-    if (!userCharacter.group) {
+    if (!userCharacter.groupMember) {
       throw new GlobalError('Personagem não participa de grupo');
     }
     return userCharacter;

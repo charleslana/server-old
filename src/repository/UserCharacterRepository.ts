@@ -25,17 +25,27 @@ export class UserCharacterRepository {
     });
   }
 
-  async findAllUserId(userId: number): Promise<IUserCharacter[]> {
-    return (await prisma.userCharacter.findMany({
+  async findAllByUserId(userId: number): Promise<IUserCharacter[]> {
+    const userCharacters = await prisma.userCharacter.findMany({
       where: { userId },
       orderBy: {
         id: 'asc',
       },
       include: {
         character: true,
-        group: true,
+        groupMember: {
+          include: {
+            group: true,
+          },
+        },
       },
-    })) as IUserCharacter[];
+    });
+    return userCharacters.map(userCharacter => {
+      return {
+        ...userCharacter,
+        maxExperience: 0,
+      } as IUserCharacter;
+    });
   }
 
   async findById(id: number): Promise<IUserCharacter | null> {
@@ -43,7 +53,7 @@ export class UserCharacterRepository {
       where: { id },
       include: {
         character: true,
-        group: true,
+        groupMember: true,
       },
     })) as IUserCharacter;
   }
@@ -56,7 +66,7 @@ export class UserCharacterRepository {
       where: { id, userId },
       include: {
         character: true,
-        group: true,
+        groupMember: true,
       },
     })) as IUserCharacter;
   }
