@@ -47,9 +47,13 @@ export class UserCharacterRepository {
       where: { id },
       include: {
         character: true,
-        groupMember: true,
+        groupMember: {
+          include: {
+            group: true,
+          },
+        },
       },
-    })) as IUserCharacter;
+    })) as unknown as IUserCharacter;
   }
 
   async findByIdAndUserId(
@@ -60,9 +64,13 @@ export class UserCharacterRepository {
       where: { id, userId },
       include: {
         character: true,
-        groupMember: true,
+        groupMember: {
+          include: {
+            group: true,
+          },
+        },
       },
-    })) as IUserCharacter;
+    })) as unknown as IUserCharacter;
   }
 
   async existsByName(name: string, id: number | null = null): Promise<boolean> {
