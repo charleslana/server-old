@@ -4,6 +4,7 @@ import CronJobService from './service/CronjobService';
 import fastify, { FastifyInstance } from 'fastify';
 import fastifyCookie from '@fastify/cookie';
 import fastifyMultipart from '@fastify/multipart';
+import fastifyRateLimit from '@fastify/rate-limit';
 import fastifySession from '@fastify/session';
 import registerRoutes from './route';
 import socketioServer from 'fastify-socket.io';
@@ -27,6 +28,11 @@ const server: FastifyInstance = fastify({
 server.register(cors, {
   origin: '*',
   credentials: true,
+});
+
+server.register(fastifyRateLimit, {
+  max: 100,
+  timeWindow: '1 minute',
 });
 
 server.register(fastifyCookie);
@@ -61,6 +67,11 @@ server.setErrorHandler((error, _request, reply) => {
     return reply.status(statusCode).send({
       message: error.message,
     });
+  }
+  if (error.statusCode === 429) {
+    return reply
+      .status(429)
+      .send({ message: 'Você atingiu o limite da taxa! Devagar, por favor!' });
   }
   reply.status(500).send({
     message: 'Internal Server Error',
