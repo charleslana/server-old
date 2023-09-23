@@ -19,6 +19,7 @@ async function main() {
     {
       userCharacterId: 1,
       itemId: 1,
+      equipped: true,
     },
     {
       userCharacterId: 1,
