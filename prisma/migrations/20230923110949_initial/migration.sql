@@ -10,6 +10,18 @@ CREATE TYPE "CharacterClassEnum" AS ENUM ('warrior', 'blader', 'wizard', 'forcea
 -- CreateEnum
 CREATE TYPE "GenderEnum" AS ENUM ('male', 'female');
 
+-- CreateEnum
+CREATE TYPE "ItemTypeEnum" AS ENUM ('equipment', 'consumable', 'other');
+
+-- CreateEnum
+CREATE TYPE "ItemEquipmentTypeEnum" AS ENUM ('glove', 'shoe', 'head', 'chest', 'weapon', 'ring', 'necklace', 'earring');
+
+-- CreateEnum
+CREATE TYPE "ItemConsumableTypeEnum" AS ENUM ('hp', 'mp', 'stamina', 'enhancement');
+
+-- CreateEnum
+CREATE TYPE "RarityEnum" AS ENUM ('mythical', 'legendary', 'epic', 'rare', 'normal', 'common');
+
 -- CreateTable
 CREATE TABLE "tb_user" (
     "id" SERIAL NOT NULL,
@@ -74,6 +86,10 @@ CREATE TABLE "tb_item" (
     "id" SERIAL NOT NULL,
     "name" VARCHAR(255) NOT NULL,
     "description" TEXT,
+    "rarity" "RarityEnum" NOT NULL DEFAULT 'common',
+    "type" "ItemTypeEnum" NOT NULL,
+    "equipment_type" "ItemEquipmentTypeEnum",
+    "consumable_type" "ItemConsumableTypeEnum",
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 

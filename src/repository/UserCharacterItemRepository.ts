@@ -1,3 +1,4 @@
+import { IGroupedItem } from '../interface/IGroupedItem';
 import { PrismaClient, UserCharacterItem } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -23,13 +24,32 @@ export class UserCharacterItemRepository {
 
   async findAllUserCharacterId(
     userCharacterId: number
-  ): Promise<UserCharacterItem[]> {
-    return await prisma.userCharacterItem.findMany({
+  ): Promise<IGroupedItem[]> {
+    const items = await prisma.userCharacterItem.findMany({
       where: { userCharacterId },
       include: {
         item: true,
       },
     });
+    const groupedItemsMap = new Map<number, IGroupedItem>();
+    for (const item of items) {
+      const { id, item: itemData } = item;
+      if (itemData.type === 'equipment') {
+        groupedItemsMap.set(id, { ...item, quantity: 1 });
+      } else {
+        if (groupedItemsMap.has(itemData.id)) {
+          const existing = groupedItemsMap.get(itemData.id);
+          if (existing) {
+            existing.quantity += 1;
+          }
+        } else {
+          const newItem = { ...item, quantity: 1 };
+          groupedItemsMap.set(itemData.id, newItem);
+        }
+      }
+    }
+    const groupedItems = Array.from(groupedItemsMap.values());
+    return groupedItems;
   }
 
   async findByIdAndUserCharacterId(

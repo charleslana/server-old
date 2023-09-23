@@ -14,9 +14,10 @@
     "characterSeed": "npx ts-node prisma/seed/characterSeed.ts",
     "userCharacterSeed": "npx ts-node prisma/seed/userCharacterSeed.ts",
     "itemSeed": "npx ts-node prisma/seed/itemSeed.ts",
+    "userCharacterItemSeed": "npx ts-node prisma/seed/userCharacterItemSeed.ts",
     "skillSeed": "npx ts-node prisma/seed/skillSeed.ts",
     "groupSeed": "npx ts-node prisma/seed/groupSeed.ts",
-    "seed": "npm run userSeed && npm run characterSeed && npm run userCharacterSeed && npm run itemSeed && npm run skillSeed && npm run groupSeed",
+    "seed": "npm run userSeed && npm run characterSeed && npm run userCharacterSeed && npm run itemSeed && npm run userCharacterItemSeed && npm run skillSeed && npm run groupSeed",
     "clear": "rm -rf node_modules && npm i"
   },
   "keywords": [],

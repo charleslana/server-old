@@ -5,12 +5,23 @@ const prisma = new PrismaClient();
 async function main() {
   const items = [
     {
-      name: 'Item 1',
+      name: 'Espada',
+      description: 'Uma espada simples',
+      type: 'equipment',
+      equipmentType: 'weapon',
     },
     {
-      name: 'Item 2',
+      name: 'Pote de recuperação de HP pequeno',
+      description: 'Recupera 50 de HP',
+      type: 'consumable',
+      consumableType: 'hp',
     },
-  ] as Item[];
+    {
+      name: 'Item de quest',
+      description: 'Descrição do item de quest',
+      type: 'other',
+    },
+  ] as unknown as Item[];
 
   for (const item of items) {
     await prisma.item.create({

@@ -35,6 +35,39 @@ enum GenderEnum {
   female
 }
 
+enum ItemTypeEnum {
+  equipment
+  consumable
+  other
+}
+
+enum ItemEquipmentTypeEnum {
+  glove
+  shoe
+  head
+  chest
+  weapon
+  ring
+  necklace
+  earring
+}
+
+enum ItemConsumableTypeEnum {
+  hp
+  mp
+  stamina
+  enhancement
+}
+
+enum RarityEnum {
+  mythical
+  legendary
+  epic
+  rare
+  normal
+  common
+}
+
 model User {
   id         Int             @id @default(autoincrement())
   email      String          @unique @db.VarChar(255)
@@ -103,11 +136,15 @@ model UserCharacter {
 }
 
 model Item {
-  id                 Int                 @id @default(autoincrement())
-  name               String              @db.VarChar(255)
+  id                 Int                     @id @default(autoincrement())
+  name               String                  @db.VarChar(255)
   description        String?
-  createdAt          DateTime            @default(now()) @map("created_at")
-  updatedAt          DateTime            @default(now()) @updatedAt @map("updated_at")
+  rarity             RarityEnum              @default(common)
+  type               ItemTypeEnum
+  equipmentType      ItemEquipmentTypeEnum?  @map("equipment_type")
+  consumableType     ItemConsumableTypeEnum? @map("consumable_type")
+  createdAt          DateTime                @default(now()) @map("created_at")
+  updatedAt          DateTime                @default(now()) @updatedAt @map("updated_at")
   userCharacterItems UserCharacterItem[]
   messageItems       MessageItem[]
 

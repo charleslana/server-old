@@ -1,4 +1,5 @@
 import { GlobalError } from '../handler/GlobalError';
+import { IGroupedItem } from '../interface/IGroupedItem';
 import { ItemService } from './ItemService';
 import { UserCharacterItem } from '@prisma/client';
 import { UserCharacterItemRepository } from '../repository/UserCharacterItemRepository';
@@ -30,7 +31,7 @@ export class UserCharacterItemService {
 
   async getAllByUserCharacterId(
     userCharacterId: number
-  ): Promise<UserCharacterItem[]> {
+  ): Promise<IGroupedItem[]> {
     const findAll =
       await this.repository.findAllUserCharacterId(userCharacterId);
     return findAll;
