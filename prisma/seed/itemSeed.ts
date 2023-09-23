@@ -5,8 +5,8 @@ const prisma = new PrismaClient();
 async function main() {
   const items = [
     {
-      name: 'Espada',
-      description: 'Uma espada simples',
+      name: 'Katana',
+      description: 'Uma katana simples',
       type: 'equipment',
       equipmentType: 'weapon',
     },
