@@ -5,10 +5,13 @@ import { UserCharacterService } from '../service/UserCharacterService';
 import { validateAuthMiddleware } from '../middleware/authMiddleware';
 import { validateBodyMiddleware } from '../middleware/validateBodyMiddleware';
 import { validateCelebrateMiddleware } from '../middleware/validateCelebrateMiddleware';
-import { validateCreateUserCharacterItem } from '../middleware/celebrate/userCharacterItemCelebrate';
 import { validateId } from '../middleware/celebrate/commonCelebrate';
 import { validateRoleMiddleware } from '../middleware/roleMiddleware';
 import { validateSessionMiddleware } from '../middleware/sessionMiddleware';
+import {
+  validateCreateUserCharacterItem,
+  validateEquippedItem,
+} from '../middleware/celebrate/userCharacterItemCelebrate';
 
 function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
   const userCharacterItemService = new UserCharacterItemService();
@@ -89,6 +92,35 @@ function createRoute(fastify: FastifyInstance, _: unknown, done: () => void) {
       await userCharacterItemService.delete(
         request.params.id,
         request.session.userCharacterId!
+      );
+    }
+  );
+
+  fastify.put(
+    '/equipment/:id',
+    {
+      preHandler: [
+        validateCelebrateMiddleware<{ Params: { id: number } }>(validateId()),
+        validateCelebrateMiddleware<{ Querystring: { equipped: boolean } }>(
+          validateEquippedItem()
+        ),
+        validateAuthMiddleware(),
+        validateSessionMiddleware(),
+      ],
+    },
+    async (
+      request: FastifyRequest<{
+        Params: { id: number };
+        Querystring: { equipped: boolean };
+      }>
+    ) => {
+      fastify.log.info(
+        `Equipar ou desequipar item do personagem ${request.session.userCharacterId} pelo id do item ${request.params.id}`
+      );
+      return await userCharacterItemService.equip(
+        request.params.id,
+        request.session.userCharacterId!,
+        request.query.equipped
       );
     }
   );

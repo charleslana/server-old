@@ -18,11 +18,11 @@ export class UserCharacterItemService {
   async getByIdAndUserCharacterId(
     id: number,
     userCharacterId: number
-  ): Promise<UserCharacterItem> {
-    const find = await this.repository.findByIdAndUserCharacterId(
+  ): Promise<IGroupedItem> {
+    const find = (await this.repository.findByIdAndUserCharacterId(
       id,
       userCharacterId
-    );
+    )) as IGroupedItem;
     if (!find) {
       throw new GlobalError('Item do personagem não encontrado');
     }
@@ -40,5 +40,33 @@ export class UserCharacterItemService {
   async delete(id: number, userCharacterId: number): Promise<void> {
     await this.getByIdAndUserCharacterId(id, userCharacterId);
     await this.repository.delete(id);
+  }
+
+  async equip(
+    id: number,
+    userCharacterId: number,
+    equipped: boolean
+  ): Promise<UserCharacterItem | null> {
+    const userCharacterItem = await this.getByIdAndUserCharacterId(
+      id,
+      userCharacterId
+    );
+    if (userCharacterItem.item.type != 'equipment') {
+      throw new GlobalError('O item não pode ser equipado');
+    }
+    if (equipped && userCharacterItem.item.equipmentType) {
+      const existingEquippedItem = await this.repository.findEquippedItemByType(
+        userCharacterId,
+        userCharacterItem.item.equipmentType
+      );
+      if (existingEquippedItem) {
+        await this.repository.update(existingEquippedItem.id, {
+          equipped: false,
+        });
+      }
+    }
+    return await this.repository.update(id, {
+      equipped,
+    });
   }
 }

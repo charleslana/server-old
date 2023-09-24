@@ -100,6 +100,7 @@ CREATE TABLE "tb_item" (
 CREATE TABLE "tb_user_character_item" (
     "id" SERIAL NOT NULL,
     "equipped" BOOLEAN,
+    "enhancement" INTEGER,
     "user_character_id" INTEGER NOT NULL,
     "item_id" INTEGER NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

@@ -7,6 +7,7 @@ async function main() {
     {
       userCharacterId: 1,
       itemId: 1,
+      enhancement: 1,
     },
     {
       userCharacterId: 1,
@@ -29,7 +30,7 @@ async function main() {
       userCharacterId: 1,
       itemId: 3,
     },
-  ] as UserCharacterItem[];
+  ] as unknown as UserCharacterItem[];
 
   for (const userCharacterItem of userCharacterItems) {
     await prisma.userCharacterItem.create({

@@ -1,5 +1,9 @@
 import { IGroupedItem } from '../interface/IGroupedItem';
-import { PrismaClient, UserCharacterItem } from '@prisma/client';
+import {
+  ItemEquipmentTypeEnum,
+  PrismaClient,
+  UserCharacterItem,
+} from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -18,6 +22,9 @@ export class UserCharacterItemRepository {
   ): Promise<UserCharacterItem | null> {
     return await prisma.userCharacterItem.update({
       where: { id },
+      include: {
+        item: true,
+      },
       data,
     });
   }
@@ -69,5 +76,20 @@ export class UserCharacterItemRepository {
       where: { id },
     });
     return !!deleted;
+  }
+
+  async findEquippedItemByType(
+    userCharacterId: number,
+    equipmentType: ItemEquipmentTypeEnum
+  ): Promise<UserCharacterItem | null> {
+    return await prisma.userCharacterItem.findFirst({
+      where: {
+        userCharacterId,
+        equipped: true,
+        item: {
+          equipmentType,
+        },
+      },
+    });
   }
 }

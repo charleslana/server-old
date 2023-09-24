@@ -154,6 +154,7 @@ model Item {
 model UserCharacterItem {
   id              Int           @id @default(autoincrement())
   equipped        Boolean?
+  enhancement     Int?
   userCharacter   UserCharacter @relation(fields: [userCharacterId], references: [id], onDelete: Cascade)
   userCharacterId Int           @map("user_character_id")
   item            Item          @relation(fields: [itemId], references: [id], onDelete: Cascade)

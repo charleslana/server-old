@@ -20,3 +20,18 @@ export const validateCreateUserCharacterItem = () => {
     { abortEarly: false, messages: customValidateMessages }
   );
 };
+
+export const validateEquippedItem = () => {
+  return celebrate(
+    {
+      [Segments.QUERY]: {
+        equipped: Joi.boolean().valid(true, false).required().messages({
+          'boolean.base': 'O parâmetro {{#label}} deve ser um valor booleano',
+          'any.only': 'O parâmetro {{#label}} deve ser "true" ou "false"',
+          'any.required': 'O parâmetro {{#label}} é obrigatório',
+        }),
+      },
+    },
+    { abortEarly: false }
+  );
+};
